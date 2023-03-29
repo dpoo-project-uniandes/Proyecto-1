@@ -1,0 +1,32 @@
+package hotel_system.models;
+
+import java.util.List;
+
+import utils.Utils;
+
+public class Factura {
+	
+	private Huesped titular;
+	private Double valorTotal;
+	private Pago pago;
+	private List<Consumible> consumibles;
+	
+	public Factura(Huesped titular, Double valorTotal, List<Consumible> consumibles) {
+		this.titular = titular;
+		this.consumibles = consumibles;
+	}
+	
+	public String generarFactura() {
+		return String.format("%s;%d;%s;%s;%.2f;%s",
+				this.titular.getNombre(),
+				this.titular.getDni(),
+				Utils.stringDate(Utils.nowDate()), 
+				consumibles.toString(), 
+				valorTotal,
+				pago != null);
+	}
+	
+	public void procesarPago() {
+		this.pago = new Pago(valorTotal);
+	}
+}

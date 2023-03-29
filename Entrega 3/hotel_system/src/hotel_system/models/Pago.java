@@ -2,15 +2,17 @@ package hotel_system.models;
 
 import java.sql.Date;
 
+import utils.Utils;
+
 public class Pago {
 	
 	private Double monto;
 	private Date fecha;
 	
-	public Pago(Double monto, Date fecha) {
+	public Pago(Double monto) {
 		super();
 		this.monto = monto;
-		this.fecha = fecha;
+		this.fecha = Utils.nowDate();
 	}
 
 	public Double getMonto() {
