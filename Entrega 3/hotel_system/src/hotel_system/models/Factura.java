@@ -29,4 +29,36 @@ public class Factura {
 	public void procesarPago() {
 		this.pago = new Pago(valorTotal);
 	}
+
+	public Huesped getTitular() {
+		return titular;
+	}
+
+	public void setTitular(Huesped titular) {
+		this.titular = titular;
+	}
+
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
+	}
+
+	public Pago getPago() {
+		return pago;
+	}
+
+	public void setPago(Pago pago) {
+		this.pago = pago;
+	}
+
+	public List<Consumible> getConsumibles() {
+		return consumibles;
+	}
+
+	public void setConsumibles(List<Consumible> consumibles) {
+		this.consumibles = consumibles;
+	}
 }
