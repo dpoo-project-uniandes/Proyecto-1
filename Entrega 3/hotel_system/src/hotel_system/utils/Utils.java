@@ -1,4 +1,4 @@
-package utils;
+package hotel_system.utils;
 
 import java.sql.Date;
 import java.time.LocalDateTime;

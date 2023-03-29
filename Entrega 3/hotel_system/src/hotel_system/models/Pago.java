@@ -2,7 +2,7 @@ package hotel_system.models;
 
 import java.sql.Date;
 
-import utils.Utils;
+import hotel_system.utils.Utils;
 
 public class Pago {
 	
