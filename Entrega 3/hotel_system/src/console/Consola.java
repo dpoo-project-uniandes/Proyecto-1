@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import hotel_system.controllers.HotelManagementSystem;
+
 public class Consola {
+	public static HotelManagementSystem PMS = new HotelManagementSystem();
 	
 	public static void main(String[] args ) {
 		
