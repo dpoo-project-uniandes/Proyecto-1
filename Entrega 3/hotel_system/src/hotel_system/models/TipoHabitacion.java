@@ -25,6 +25,13 @@ public class TipoHabitacion {
 		this.precio = precio;
 	}
 
+	@Override
+	public String toString() {
+		return "TipoHabitacion [alias=" + alias + ", capacidad=" + capacidad + ", conBalcon=" + conBalcon
+				+ ", conVista=" + conVista + ", conCocina=" + conCocina + ", camasSencillas=" + camasSencillas
+				+ ", camasDobles=" + camasDobles + ", camasQueen=" + camasQueen + ", precio=" + precio + "]";
+	}
+
 	public String getAlias() {
 		return alias;
 	}

@@ -28,6 +28,12 @@ public class Disponibilidad {
 		return Objects.equals(fecha, other.fecha);
 	}
 
+	@Override
+	public String toString() {
+		return "Disponibilidad [precio=" + precio + ", estado=" + estado + ", fecha=" + fecha + ", reserva=" + reserva
+				+ "]";
+	}
+
 	public Double getPrecio() {
 		return precio;
 	}

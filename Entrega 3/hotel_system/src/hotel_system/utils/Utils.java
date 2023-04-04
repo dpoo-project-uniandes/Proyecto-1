@@ -16,6 +16,11 @@ public class Utils {
 		return dtf.format(date.toLocalDate());
 	}
 	
+	public static final String stringLocalDate(Date date) {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		return dtf.format(date.toLocalDate());
+	}
+	
 	public static final Integer sustractDates(Date date1, Date date2) {
 		Long diffInMillies = Math.abs(date2.getTime() - date1.getTime());
 		return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);

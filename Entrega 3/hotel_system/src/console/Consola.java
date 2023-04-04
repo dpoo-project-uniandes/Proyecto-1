@@ -9,7 +9,8 @@ import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
 
 public class Consola {
-	public static HotelManagementSystem PMS = new HotelManagementSystem();
+	
+	public static HotelManagementSystem hotelSystem = new HotelManagementSystem();
 	
 	public static void main(String[] args ) {
 		bienvenida();
@@ -50,9 +51,9 @@ public class Consola {
 							while (obtenerRol) {
 								System.out.println("Roles:\n1)Administrador\n2)Recepcionista");
 								String rolEscogido = input("Ingresa un número entre 1 y 2");
-								if (rolEscogido.equals("1")) {PMS.registrar_usuario(user, password, Rol.ADMIN);
+								if (rolEscogido.equals("1")) {hotelSystem.registrar_usuario(user, password, Rol.ADMIN);
 								obtenerContra = false;registrando = false; obtenerRol=false;break;}
-								else if (rolEscogido.equals("2")) {PMS.registrar_usuario(user, password, Rol.RECEPCIONISTA);
+								else if (rolEscogido.equals("2")) {hotelSystem.registrar_usuario(user, password, Rol.RECEPCIONISTA);
 								obtenerContra = false;registrando = false; obtenerRol=false;break;}
 								else {System.out.println("Recuerda que es un número entre 1 y 2");
 								int opcion_seleccionada = Integer.parseInt(input("¿Deseas intentarlo de nuevo?\n1)Si\n2)No"));
@@ -89,11 +90,11 @@ public class Consola {
 		while(ingresando) {
 			try {
 				String user = input("Por favor ingrese su nombre de usuario");
-				if (PMS.validad_usuario(user)) {
+				if (hotelSystem.validad_usuario(user)) {
 					boolean accediendo = true;
 					while (accediendo) {
 						String password = input("Por favor ingrese su contraseña");
-						Usuario usuario = PMS.validar_contraseña(user, password);
+						Usuario usuario = hotelSystem.validar_contraseña(user, password);
 						if (usuario != null) {
 							String rol = usuario.getRol().toString();
 							if (rol.equals("ADMIN")) {admin();}
@@ -148,7 +149,7 @@ public class Consola {
 
 	}
 	public static void bienvenida() {
-		System.out.println("Hola! Este es el Property Management System");
+		System.out.println("Hola! Este es el Hotel Management System");
 		
 	}
 	
