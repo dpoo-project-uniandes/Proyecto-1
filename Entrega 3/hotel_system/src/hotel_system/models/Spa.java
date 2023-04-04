@@ -32,7 +32,7 @@ public class Spa extends Servicio {
 	public void setProductosYServicios(List<Producto> productosYServicios) {
 		this.productos = productosYServicios;
 	}
-
+	@Override
 	public Factura facturar(Huesped titular) {
 	    Double valorTotal = 0.0;
 	    List<Consumible> consumibles = new ArrayList<>(this.getProductosYServicios());
@@ -40,7 +40,10 @@ public class Spa extends Servicio {
 	        valorTotal += producto.getPrecio();
 	    }
 	    Factura factura = new Factura(titular, valorTotal, consumibles);
+	    factura.procesarPago();
 	    return factura;
 	}
+
+
 
 }

@@ -47,6 +47,7 @@ public class Producto implements Consumible{
 		consumibles.add(this);
 		Double valorTotal = this.getPrecio();
 	    Factura factura = new Factura(titular, valorTotal, consumibles);
+	    factura.procesarPago();
 	    return factura;
 	}
 
