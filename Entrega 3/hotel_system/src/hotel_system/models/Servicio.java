@@ -1,6 +1,6 @@
 package hotel_system.models;
 
-public abstract class Servicio {
+public abstract class Servicio implements Consumible {
 	
 	private Long id;
 
