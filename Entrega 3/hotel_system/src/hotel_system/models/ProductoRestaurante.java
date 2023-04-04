@@ -1,6 +1,7 @@
 package hotel_system.models;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductoRestaurante extends Producto {
@@ -40,4 +41,8 @@ public class ProductoRestaurante extends Producto {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+	
+
 }
+
+

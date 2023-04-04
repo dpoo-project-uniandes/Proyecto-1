@@ -1,5 +1,6 @@
 package hotel_system.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Spa extends Servicio {
@@ -31,4 +32,18 @@ public class Spa extends Servicio {
 	public void setProductosYServicios(List<Producto> productosYServicios) {
 		this.productos = productosYServicios;
 	}
+	@Override
+	public Factura facturar(Huesped titular) {
+	    Double valorTotal = 0.0;
+	    List<Consumible> consumibles = new ArrayList<>(this.getProductosYServicios());
+	    for (Producto producto : this.getProductosYServicios()) {
+	        valorTotal += producto.getPrecio();
+	    }
+	    Factura factura = new Factura(titular, valorTotal, consumibles);
+	    factura.procesarPago();
+	    return factura;
+	}
+
+
+
 }
