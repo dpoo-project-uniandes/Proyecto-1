@@ -52,6 +52,15 @@ public class HotelManagementSystem {
 		
 	}
 	
+	public boolean validad_usuario(String user, String password) {
+		for (Usuario u : usuarios) {
+            if (u.getLogin().equals(user) && u.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+	}
+	
 	public void registrar_usuario() {
 		
 	}
