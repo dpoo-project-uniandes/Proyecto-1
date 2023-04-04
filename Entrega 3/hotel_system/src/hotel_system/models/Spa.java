@@ -35,11 +35,11 @@ public class Spa extends Servicio {
 
 	public Factura facturar(Huesped titular) {
 	    Double valorTotal = 0.0;
-	    for (Producto producto : this.productos) {
+	    List<Consumible> consumibles = new ArrayList<>(this.getProductosYServicios());
+	    for (Producto producto : this.getProductosYServicios()) {
 	        valorTotal += producto.getPrecio();
 	    }
-	    Factura factura = new Factura(titular, valorTotal, new ArrayList<>(this.productos));
-	    factura.procesarPago();
+	    Factura factura = new Factura(titular, valorTotal, consumibles);
 	    return factura;
 	}
 

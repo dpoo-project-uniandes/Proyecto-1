@@ -44,10 +44,12 @@ public class ProductoRestaurante extends Producto {
 	
 	public Factura facturar(Huesped titular) {
 	    List<Consumible> consumibles = new ArrayList<>();
+	    Double valorTotal = this.getPrecio();
 	    consumibles.add(this);
-	    Factura factura = new Factura(titular, this.getPrecio(), consumibles);
-	    factura.procesarPago();
+	    Factura factura = new Factura(titular, valorTotal, consumibles);
 	    return factura;
 	}
 
 }
+
+

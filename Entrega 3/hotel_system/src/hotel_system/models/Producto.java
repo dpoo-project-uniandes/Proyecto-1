@@ -44,9 +44,9 @@ public class Producto implements Consumible{
 
 	public Factura facturar(Huesped titular) {
 		List<Consumible> consumibles = new ArrayList<>();
-	    consumibles.add(this);
-	    Factura factura = new Factura(titular, this.precio, consumibles);
-	    factura.procesarPago();
+		consumibles.add(this);
+		Double valorTotal = this.getPrecio();
+	    Factura factura = new Factura(titular, valorTotal, consumibles);
 	    return factura;
 	}
 

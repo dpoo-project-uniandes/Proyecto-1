@@ -35,11 +35,11 @@ public class Restaurante extends Servicio {
 
 	public Factura facturar(Huesped titular) {
 	    Double valorTotal = 0.0;
+	    List<Consumible> consumibles = new ArrayList<>(this.productos);
 	    for (ProductoRestaurante producto : this.productos) {
 	        valorTotal += producto.getPrecio();
 	    }
-	    Factura factura = new Factura(titular, valorTotal, new ArrayList<>(this.productos));
-	    factura.procesarPago();
+	    Factura factura = new Factura(titular, valorTotal, consumibles);
 	    return factura;
 	}
 
