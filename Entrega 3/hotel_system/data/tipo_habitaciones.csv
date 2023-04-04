@@ -1,4 +1,4 @@
-alias,balcon,vista,cocina,camas_sencilla,camas_dobles,camas_queen,capacidad,precio
+alias,balcon,vista,cocina,camas_sencilla,camas_doble,camas_queen,capacidad,precio
 estandar_sencilla,false,true,false,1,0,0,1,100
 estandar_doble,false,true,false,0,1,0,2,150
 suite_sencilla,true,true,false,0,1,0,2,180

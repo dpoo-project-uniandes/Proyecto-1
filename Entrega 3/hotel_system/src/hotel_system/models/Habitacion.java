@@ -53,6 +53,11 @@ public class Habitacion {
 		return false;
 	}
 	
+	@Override
+	public String toString() {
+		return "Habitacion [numero=" + numero + ", tipo=" + tipo + ", disponibilidad=" + disponibilidad.size() + "]";
+	}
+
 	public void agregarDisponibilidad(Disponibilidad disponibilidad) {
 		this.disponibilidad.add(disponibilidad);
 	}
