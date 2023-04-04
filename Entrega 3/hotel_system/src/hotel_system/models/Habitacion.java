@@ -3,6 +3,7 @@ package hotel_system.models;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import hotel_system.utils.Utils;
 
@@ -76,5 +77,12 @@ public class Habitacion {
 
 	public void setTipo(TipoHabitacion tipo) {
 		this.tipo = tipo;
+	}
+	public Reserva getReservaActual() {
+		try {
+		  return disponibilidad.stream()
+				.filter(dis -> dis.equals(Utils.nowDate())).findAny()
+				.get().getReserva();
+		}catch (NoSuchElementException e) {return null;}
 	}
 }
