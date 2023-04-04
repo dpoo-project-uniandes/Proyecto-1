@@ -41,7 +41,7 @@ public class Producto implements Consumible{
 	}
 	
 	
-
+ 
 	public Factura facturar(Huesped titular) {
 		List<Consumible> consumibles = new ArrayList<>();
 		consumibles.add(this);
