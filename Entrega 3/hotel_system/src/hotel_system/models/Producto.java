@@ -1,6 +1,9 @@
 package hotel_system.models;
 
-public class Producto {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Producto implements Consumible{
 	
 	private Long id;
 	private String nombre;
@@ -36,4 +39,15 @@ public class Producto {
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
+	
+	
+
+	public Factura facturar(Huesped titular) {
+		List<Consumible> consumibles = new ArrayList<>();
+	    consumibles.add(this);
+	    Factura factura = new Factura(titular, this.precio, consumibles);
+	    factura.procesarPago();
+	    return factura;
+	}
+
 }
