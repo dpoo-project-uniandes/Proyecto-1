@@ -1,16 +1,19 @@
 package hotel_system.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import hotel_system.models.Estadia;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
+import hotel_system.models.Rol;
 import hotel_system.models.Servicio;
 import hotel_system.models.Usuario;
 
 public class HotelManagementSystem {
 	
-	private ArrayList<Usuario> usuarios;
+	private HashMap<String,Usuario> usuarios;
 	private ArrayList<Habitacion> inventarioHabitaciones;
 	private ArrayList<Reserva> reservas;
 	private ArrayList<Estadia> registros;
@@ -26,8 +29,8 @@ public class HotelManagementSystem {
 		this.inventarioServicios = cargarServicios();
 	}
 	
-	private ArrayList<Usuario> cargarUsuarios(){
-		return usuarios;
+	private HashMap<String, Usuario> cargarUsuarios(){
+		return new HashMap<String,Usuario>();
 		
 	}
 	
@@ -52,16 +55,15 @@ public class HotelManagementSystem {
 		
 	}
 	
-	public boolean validad_usuario(String user, String password) {
-		for (Usuario u : usuarios) {
-            if (u.getLogin().equals(user) && u.getPassword().equals(password)) {
-                return true;
-            }
-        }
-        return false;
+	public boolean validad_usuario(String user) {
+		return usuarios.containsKey(user);
+	}
+	public Usuario validar_contraseña(String user, String password) {
+		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user); 
+		else return null;
 	}
 	
-	public void registrar_usuario() {
-		
+	public void registrar_usuario(String user, String password, Rol rol) {
+		usuarios.put(user, new Usuario(user, password, rol));
 	}
 }
