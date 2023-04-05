@@ -94,9 +94,8 @@ public class Consola {
 					boolean accediendo = true;
 					while (accediendo) {
 						String password = input("Por favor ingrese su contraseña");
-						Usuario usuario = hotelSystem.validar_contraseña(user, password);
-						if (usuario != null) {
-							String rol = usuario.getRol().toString();
+						String rol = hotelSystem.validar_contraseña(user, password);
+						if (rol != null) {
 							if (rol.equals("ADMIN")) {admin();}
 							else if (rol.equals("RECEPCIONISTA")) {recepcionista();}
 						}

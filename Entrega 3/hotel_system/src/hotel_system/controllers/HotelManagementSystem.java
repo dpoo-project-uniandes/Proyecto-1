@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
@@ -15,6 +17,7 @@ import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Servicio;
 import hotel_system.models.TipoHabitacion;
+import hotel_system.models.Titular;
 import hotel_system.models.Usuario;
 import hotel_system.utils.Utils;
 import services.FileManager;
@@ -115,12 +118,27 @@ public class HotelManagementSystem {
 		return inventarioServicios;
 		
 	}
+	public Habitacion getHabitacion(int habitacion) {
+		try {
+			return inventarioHabitaciones.stream()
+					.filter(hab -> hab.getNumero()==habitacion)
+					.findAny().get();}
+		catch(NoSuchElementException e) {
+			return null;
+		}
+		
+	}
+	public Titular getTitular(Habitacion habitacion) {
+		//Titular tit = habitacion.getReservaActual();
+		
+		return null;
+	}
 	
 	public boolean validad_usuario(String user) {
 		return usuarios.containsKey(user);
 	}
-	public Usuario validar_contraseña(String user, String password) {
-		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user); 
+	public String validar_contraseña(String user, String password) {
+		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString(); 
 		else return null;
 	}
 	
