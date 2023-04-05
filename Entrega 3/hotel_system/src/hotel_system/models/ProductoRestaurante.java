@@ -10,10 +10,10 @@ public class ProductoRestaurante extends Producto {
 	private Boolean alCuarto;
 	private String tipo;
 	
-	public ProductoRestaurante(Long id, String nombre, Double precio, List<Date> rangoHorario, Boolean alCuarto,
+	public ProductoRestaurante(Long id, String nombre, Double precio, List<Date> rangoHorario2, Boolean alCuarto,
 			String tipo) {
 		super(id, nombre, precio);
-		this.rangoHorario = rangoHorario;
+		this.rangoHorario = rangoHorario2;
 		this.alCuarto = alCuarto;
 		this.tipo = tipo;
 	}
