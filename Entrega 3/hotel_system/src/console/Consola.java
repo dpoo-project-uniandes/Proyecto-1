@@ -187,8 +187,8 @@ public class Consola {
 		
 		Integer cantidad = Integer.parseInt(input("Ingrese la cantidad de personas"));
 		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
-		String fechaLlegada = fechaValida("Salida");
-		String fechaSalida = fechaValida("Llegada");
+		String fechaLlegada = fechaValida("Llegada");
+		String fechaSalida = fechaValida("Salida");
 		List<Integer> habitaciones=escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
 		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
 	}
@@ -221,10 +221,10 @@ public class Consola {
 		
 		for (TipoHabitacion hab:hotelSystem.getOpcionesHabitacion()) {
 			System.out.println((count+1)+") nombre:"+hab.getAlias()
-			+"; capacidad:"+hab.getCapacidad() +"; con Cocina:"
-			+ (hab.getConCocina()? "Si":"No")+ "; con Balcón:"
-			+ (hab.getConBalcon()? "Si":"No") + "; con Vista:"
-			+ (hab.getConVista()? "Si":"No"));
+			+"; capacidad:"+hab.getCapacidad() 
+			+ (hab.getConCocina()? "; Con Cocina":"") 
+			+ (hab.getConBalcon()? "; Con Balcón":"") 
+			+ (hab.getConVista()? "; Con Vista":""));
 			count++;
 		}
 		Integer seleccion = Integer.parseInt(input("Selecciona la habitación, digite un número entre 1 y "+count));

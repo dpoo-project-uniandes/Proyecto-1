@@ -41,23 +41,23 @@ public class HotelManagementSystem {
 	private List<Producto> inventarioProductos;
 	private List<Servicio> inventarioServicios;
 	
-	public HotelManagementSystem() {
+	public HotelManagementSystem()  {
+		cargarUsuarios();
 		try {
 			cargarTipoHabitaciones();
 			cargarHabitaciones();
-			this.usuarios = cargarUsuarios();
-			this.reservas = cargarReservas();
-			this.registros = cargarEstadias();
-			this.setInventarioProductos(cargarProductos());
-			this.setInventarioServicios(cargarServicios());
+			//this.reservas = cargarReservas();
+			//this.registros = cargarEstadias();
+			//this.setInventarioProductos(cargarProductos());
+			//this.setInventarioServicios(cargarServicios());
 		} catch (Exception e) {
 			System.out.println("El sistema no puedo iniciarlizarse, intente nuevamente");
 			e.printStackTrace();
 		}
 	}
 	
-	private HashMap<String, Usuario> cargarUsuarios(){
-		return new HashMap<String,Usuario>();
+	private void cargarUsuarios(){
+		usuarios= new HashMap<String,Usuario>();
 	}
 	
 	private void cargarTipoHabitaciones() throws Exception {
@@ -160,7 +160,7 @@ public class HotelManagementSystem {
 	    return productosCargados;
 	    }
 
-	    
+	    /*
 	    private void cargarServicios() throws Exception {
 	        HashMap<String, List<Object>> serviciosCargados = new HashMap<>();
 
@@ -190,7 +190,7 @@ public class HotelManagementSystem {
 	        serviciosCargados.put("Restaurante", productosRestaurante);
 
 	        this.setInventarioServicios(serviciosCargados);
-	    }
+	    }*/
 
 	
 	public Reserva getReservaById(String id) {
