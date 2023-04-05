@@ -152,37 +152,41 @@ public class HotelManagementSystem {
 	    return productosCargados;
 	    }
 
-	    /*
-	    private void cargarServicios() throws Exception {
-	        HashMap<String, List<Object>> serviciosCargados = new HashMap<>();
+	public static HashMap<String, List<Object>> cargarServicios() throws Exception {
+        HashMap<String, List<Object>> serviciosCargados = new HashMap<>();
 
-	        List<Object> productosSpa = new ArrayList<>();
-	        List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("productos_spa.csv");
-	        for (Map<String, String> dato : datosSpa) {
-	            Long id = Long.parseLong(dato.get("id"));
-	            String nombre = dato.get("nombre");
-	            Double precio = Double.parseDouble(dato.get("precio"));
-	            Spa producto = new Spa(id, nombre, precio);
-	            productosSpa.add(producto);
-	        }
-	        serviciosCargados.put("Spa", productosSpa);
+        List<Object> productosRestaurante = new ArrayList<>();
+        List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("restaurante.csv");
+        for (Map<String, String> dato : datosRestaurante) {
+            Long id = Long.parseLong(dato.get("id"));
+            String nombre = dato.get("nombre");
+            Double precio = Double.parseDouble(dato.get("precio"));
+            String fechaInicial = dato.get("fechaInicial");
+            String fechaFinal = dato.get("fechaFinal");
+            List<Date> fechas = new ArrayList<>();
+            fechas.add(fechaInicial);
+            fechas.add(fechaFinal);
+            Boolean alCuarto = Boolean.parseBoolean(dato.get("alCuarto"));
+            String tipo = dato.get("tipo");
+            ProductoRestaurante producto = new ProductoRestaurante(id, nombre, precio, fechas, alCuarto, tipo);
+            productosRestaurante.add(producto);
+        }
+        serviciosCargados.put("Servicio Restaurante", productosRestaurante);
 
-	        List<Object> productosRestaurante = new ArrayList<>();
-	        List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("productos_restaurante.csv");
-	        for (Map<String, String> dato : datosRestaurante) {
-	            Long id = Long.parseLong(dato.get("id"));
-	            String nombre = dato.get("nombre");
-	            Double precio = Double.parseDouble(dato.get("precio"));
-	            String rangoHorario = dato.get("rangoHorario");
-	            Boolean alCuarto = Boolean.parseBoolean(dato.get("alCuarto"));
-	            String tipo = dato.get("tipo");
-	            ProductoRestaurante producto = new ProductoRestaurante(id, nombre, precio, rangoHorario, alCuarto, tipo);
-	            productosRestaurante.add(producto);
-	        }
-	        serviciosCargados.put("Restaurante", productosRestaurante);
+        List<Object> productosSpa = new ArrayList<>();
+        List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("spa.csv");
+        for (Map<String, String> dato : datosSpa) {
+            Long id = Long.parseLong(dato.get("id"));
+            String nombre = dato.get("nombre");
+            Double precio = Double.parseDouble(dato.get("precio"));
+            Spa producto = new Spa(id, nombre, precio);
+            productosSpa.add(producto);
+        }
+        serviciosCargados.put("Servicio Spa", productosSpa);
 
-	        this.setInventarioServicios(serviciosCargados);
-	    }*/
+        return serviciosCargados;
+    }
+}
 
 	
 	public Reserva getReservaById(String id) {

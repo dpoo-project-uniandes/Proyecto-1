@@ -35,7 +35,7 @@ public class Restaurante extends Servicio {
 	    for (ProductoRestaurante producto : this.productos) {
 	        valorTotal += producto.getPrecio();
 	    }
-	    Factura factura = new Factura(titular, valorTotal, consumibles);
+	    Factura factura = new Factura(titular,consumibles);
 	    factura.procesarPago();
 	    return factura;
 	}
