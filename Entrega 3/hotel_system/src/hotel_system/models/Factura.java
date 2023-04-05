@@ -11,9 +11,24 @@ public class Factura {
 	private Pago pago;
 	private List<Consumible> consumibles;
 	
-	public Factura(Huesped titular, Double valorTotal, List<Consumible> consumibles) {
+	public Factura(Huesped titular, List<Consumible> consumibles) {
 		this.titular = titular;
+		this.valorTotal = calcularValorTotal(consumibles);
 		this.consumibles = consumibles;
+	}
+	
+	public Factura(Huesped titular) {
+		this.titular = titular;
+		this.valorTotal = 0.0;
+		this.consumibles = List.of();
+	}
+	
+	private Double calcularValorTotal(List<Consumible> consumibles) {
+		Double valorTotal = 0.0;
+		for (Consumible consumible : consumibles) {
+			valorTotal += consumible.valor();
+		}
+		return valorTotal;
 	}
 	
 	public String generarFactura() {
@@ -28,6 +43,14 @@ public class Factura {
 	
 	public void procesarPago() {
 		this.pago = new Pago(valorTotal);
+	}
+	
+	public void agregarConsumible(Consumible consumible) {
+		this.consumibles.add(consumible);
+	}
+	
+	public void eliminarConsumible(Consumible consumible) {
+		this.consumibles.remove(consumible);
 	}
 
 	public Huesped getTitular() {

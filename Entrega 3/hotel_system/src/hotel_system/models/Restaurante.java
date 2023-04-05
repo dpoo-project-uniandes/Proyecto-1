@@ -16,13 +16,8 @@ public class Restaurante extends Servicio {
 		this.productos.add(producto);
 	}
 	
-	public void eliminarProducto(Long id) {
-		for(ProductoRestaurante p : productos) {
-			if(p.getId().equals(id)) {
-				this.productos.remove(p);
-				return;
-			}
-		}
+	public void eliminarProducto(ProductoRestaurante producto) {
+		this.productos.remove(producto);
 	}
 
 	public List<ProductoRestaurante> getProductos() {
@@ -32,6 +27,7 @@ public class Restaurante extends Servicio {
 	public void setProductos(List<ProductoRestaurante> productos) {
 		this.productos = productos;
 	}
+	
 	@Override
 	public Factura facturar(Huesped titular) {
 	    Double valorTotal = 0.0;
