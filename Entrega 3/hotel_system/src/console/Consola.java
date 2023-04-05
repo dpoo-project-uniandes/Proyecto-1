@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.models.Producto;
+import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Rol;
 import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Usuario;
@@ -164,8 +166,106 @@ public class Consola {
 	}
 
 	private static void registrarConsumible() {
-		// TODO Auto-generated method stub
+		Boolean escogiendo = true;
+		while (escogiendo) {
+			try {
+				switch (Integer.parseInt(input("Selecciona una opción:"))){
+					case 1:
+						productoSpa();
+						break;
+					case 2:
+						productoRestaurante();
+						break;
+					case 3:
+						producto();
+						break;
+					case 4:
+						escogiendo = false;
+						break;
+					default:
+						System.out.println("Por favor, ingrese un número de 1 a 4");
+						break;
+						
+				}
+				
+			}
+			catch (NumberFormatException e) {
+				System.out.println("Por favor, ingrese un Numero Válido");
+			}
+		}
 		
+	}
+	private static void producto() {
+		Boolean consumiendo = true;
+		while (consumiendo) {
+		Integer count = 0; 
+		for(Producto producto: hotelSystem.getInventarioProductos()){
+			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+			count++;
+			}
+		Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
+		if (seleccion <= count && seleccion>=1) 
+			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
+			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+			hotelSystem.seleccionarProducto(seleccion-1, hab, pagar );}
+		else
+			{System.out.println("Selcciona un numero entre 1 y " +count);
+			producto();}
+		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
+		else {consumiendo=false;}	
+	}
+		
+	}
+
+	private static void productoRestaurante() {
+		Boolean consumiendo = true;
+		while (consumiendo) {
+		Integer count = 0; 
+		for(ProductoRestaurante producto: hotelSystem.getServiciosRestaurante()){
+			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+			count++;
+			}
+		Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
+		if (seleccion <= count && seleccion>=1) 
+			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
+			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+			hotelSystem.seleccionarProductoRestaurante(seleccion-1, hab, pagar );}
+		else
+			{System.out.println("Selcciona un numero entre 1 y " +count);
+			productoRestaurante();}
+		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
+		else {consumiendo=false;}	
+	}
+		
+	}
+
+	private static void productoSpa() {
+		Boolean consumiendo = true;
+		while (consumiendo) {
+		Integer count = 0; 
+		for(Producto producto: hotelSystem.getServiciosSpa()){
+			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+			count++;
+			}
+		Integer seleccion = Integer.parseInt(input("Selecciona el servicio, digite un número entre 1 y "+count));
+		if (seleccion <= count && seleccion>=1) 
+			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
+			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+			hotelSystem.seleccionarProductoSpa(seleccion-1, hab, pagar);}
+		else
+			{System.out.println("Selcciona un numero entre 1 y " +count);
+			productoSpa();}
+		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
+		else {consumiendo=false;}	
+	}}
+
+	private static void printConsumos() {
+		System.out.println("Selecciona entre las siguientes opciones:");
+		System.out.println("1) Para un Servicio de Spa");
+		System.out.println("2) Para un Servicio de Restaurante");
+		System.out.println("3) Para un producto");
+		System.out.println("4) Para salir");
+
 	}
 
 	private static void finalizarEstadia() {
