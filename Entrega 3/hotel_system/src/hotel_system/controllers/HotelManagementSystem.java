@@ -38,10 +38,10 @@ public class HotelManagementSystem {
 		try {
 			cargarTipoHabitaciones();
 			cargarHabitaciones();
-			//this.reservas = cargarReservas();
+			cargarReservas();
 			//this.registros = cargarEstadias();
 			//this.setInventarioProductos(cargarProductos());
-			//this.setInventarioServicios(cargarServicios());
+			this.setInventarioServicios(cargarServicios());
 		} catch (Exception e) {
 			System.out.println("El sistema no puedo iniciarlizarse, intente nuevamente");
 			e.printStackTrace();
@@ -103,10 +103,28 @@ public class HotelManagementSystem {
 		return disponibilidad;
 	}
 	
-	private List<Reserva> cargarReservas(){
-		return reservas;
+	private void cargarReservas() throws Exception{
+		this.reservas = new ArrayList<Reserva>();
+		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("reservas.csv");
+		for (Map<String, String> dato:datos) {
+			Titular titular = setTitular(dato.get("titular"));
+			
+			this.reservas.add(new Reserva(Utils.stringToDate(dato.get("fechaLlegada")),
+			Utils.stringToDate("fechaSalida"), titular, Integer.parseInt(dato.get("cantidadPersonas")), 
+			inventarioHabitaciones)); 
+		}
+		
 		
 	}
+	private Titular setTitular(String string) {
+		String[] datos = string.split(",");
+		return new Titular(datos[0], 
+				datos[2], 
+				Integer.parseInt(datos[1]), 
+				datos[3], 
+				datos[4]);
+	}
+
 	private List<Estadia> cargarEstadias(){
 		return registros;
 		
@@ -152,7 +170,7 @@ public class HotelManagementSystem {
 	    return productosCargados;
 	    }
 
-	    /*
+	    
 	    private void cargarServicios() throws Exception {
 	        HashMap<String, List<Object>> serviciosCargados = new HashMap<>();
 
@@ -182,7 +200,7 @@ public class HotelManagementSystem {
 	        serviciosCargados.put("Restaurante", productosRestaurante);
 
 	        this.setInventarioServicios(serviciosCargados);
-	    }*/
+	    }
 
 	
 	public Reserva getReservaById(String id) {

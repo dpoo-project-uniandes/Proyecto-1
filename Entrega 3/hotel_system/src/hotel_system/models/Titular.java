@@ -31,4 +31,8 @@ public class Titular extends Huesped {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+	@Override
+	public String toString() {
+		return String.format("nombre:%s,edad:%d,dni:%s,email:%s,telefono:%s", getNombre(), getEdad(), getDni(), getEmail(), getTelefono());
+	}
 }

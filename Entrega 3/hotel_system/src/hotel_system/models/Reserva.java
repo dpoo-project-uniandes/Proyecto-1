@@ -22,6 +22,7 @@ public class Reserva {
 		this.tarifaTotal=0.0;
 		this.fechaDeLlegada=fechaDeLlegada;
 		this.fechaDeCreacion=Utils.nowDate();
+		this.estadia = null;
 		this.cantidadPersonas = cantidad;
 		this.fechaDeSalida = fechaDeSalida;
 		this.titular = titular;
@@ -56,11 +57,21 @@ public class Reserva {
 					+ cantidadPersonas+", fecha de creación="+ Utils.stringDate(fechaDeCreacion)
 					+", fecha de llegada="+Utils.stringDate(fechaDeLlegada)+", fecha de salida=" + Utils.stringDate(fechaDeSalida) +"]";
 	}
+	public String toCsv() {
+		return  numero+";"+tarifaTotal+";"+estado.toString()+""+cantidadPersonas+";"+fechaDeCreacion+";"+fechaDeLlegada
+				+";"+fechaDeSalida +";"+titular.toString()+";"+((estadia == null)? "null":""+estadia.getId()+";"+strHabitaciones());
+	}
 	
 	public Integer getNumero() {
 		return numero;
 	}
 	
+	private String strHabitaciones() {
+		String msg="";
+		for (Habitacion hab : habitaciones) {
+			msg+=","+hab.getNumero();
+		}return new String(msg.substring(1));
+	}
 	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
