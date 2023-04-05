@@ -1,6 +1,7 @@
 package hotel_system.utils;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,12 @@ public class Utils {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		return dtf.format(date.toLocalDate());
 	}
+	public static Date stringToDate(String fecha) {
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	    LocalDate localDate = LocalDate.parse(fecha, dtf);
+	    return Date.valueOf(localDate);
+	}
+	
 	
 	public static final String stringLocalDate(Date date) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");

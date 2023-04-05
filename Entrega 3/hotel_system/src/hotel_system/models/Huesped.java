@@ -3,10 +3,10 @@ package hotel_system.models;
 public class Huesped {
 	
 	private String nombre;
-	private Long dni;
+	private String dni;
 	private Integer edad;
 	
-	public Huesped(String nombre, Long dni, Integer edad) {
+	public Huesped(String nombre, String dni, Integer edad) {
 		super();
 		this.nombre = nombre;
 		this.dni = dni;
@@ -21,11 +21,11 @@ public class Huesped {
 		this.nombre = nombre;
 	}
 
-	public Long getDni() {
+	public String getDni() {
 		return dni;
 	}
 
-	public void setDni(Long dni) {
+	public void setDni(String dni) {
 		this.dni = dni;
 	}
 

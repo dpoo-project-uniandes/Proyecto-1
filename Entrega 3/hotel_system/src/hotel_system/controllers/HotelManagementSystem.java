@@ -18,6 +18,7 @@ import hotel_system.models.Rol;
 import hotel_system.models.Servicio;
 import hotel_system.models.Spa;
 import hotel_system.models.TipoHabitacion;
+import hotel_system.models.Titular;
 import hotel_system.models.Usuario;
 import hotel_system.utils.Utils;
 import services.FileManager;
@@ -27,6 +28,14 @@ public class HotelManagementSystem {
 	private Map<String,Usuario> usuarios;
 	private List<Habitacion> inventarioHabitaciones;
 	private List<TipoHabitacion> opcionesHabitacion;
+	public List<TipoHabitacion> getOpcionesHabitacion() {
+		return opcionesHabitacion;
+	}
+
+	public void setOpcionesHabitacion(List<TipoHabitacion> opcionesHabitacion) {
+		this.opcionesHabitacion = opcionesHabitacion;
+	}
+
 	private List<Reserva> reservas;
 	private List<Estadia> registros;
 	private List<Producto> inventarioProductos;
@@ -110,8 +119,33 @@ public class HotelManagementSystem {
 		return registros;
 		
 	}
+	public Integer calcularCapacidadTotal(List<Integer> ids) {
+		Integer count = 0;
+		for (Integer id:ids) {
+			count+=inventarioHabitaciones.stream().filter(hab -> hab.getNumero() == id)
+			.findAny().get().getTipo().getCapacidad();
+		}
+		return count;
+	}
 	
-
+	public void reservar(String nombre, String email, String dni, String telefono
+			,Integer edad, Integer cantidad, List<Integer> opcionHab, String llegada, String salida ) {
+		
+		Titular titular = new Titular(nombre, dni, edad, email, telefono);
+		List<Habitacion> habitaciones = new ArrayList<Habitacion>();
+		for (Integer num:opcionHab) {
+			habitaciones.add(inventarioHabitaciones.stream().filter(hab -> hab.getNumero() == num)
+					.findAny().get());
+		}
+		reservas.add(new Reserva(Utils.stringToDate(llegada), Utils.stringToDate(salida), titular, cantidad, habitaciones));
+		//Reserva reserva = new Reserva();
+	}
+	public Integer seleccionarHab(Integer select) {
+		String alias = opcionesHabitacion.get(select).getAlias();
+		return inventarioHabitaciones.stream()
+				.filter(hab -> hab.getTipo().getAlias().equals(alias))
+				.findAny().get().getNumero();
+	}
 	private List<Producto> cargarProductos() throws Exception {
 		List<Producto> productosCargados = new ArrayList<>();
 	    List<Map<String, String>> datos = FileManager.cargarArchivoCSV("productos.csv");

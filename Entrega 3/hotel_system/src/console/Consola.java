@@ -3,10 +3,14 @@ package console;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.models.Rol;
+import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Usuario;
+import services.SecValidation;
 
 public class Consola {
 	
@@ -39,14 +43,14 @@ public class Consola {
 				System.out.println("-Ser de entre 4 a 12 caracteres");
 				System.out.println("-Puede incluir guiones ");
 				String user = input("Por favor ingrese el nombre de usuario");
-				if (user.matches("^[a-zA-Z][-\\w!]{3,11}$")) {
+				if (SecValidation.checkUser(user)) {
 					boolean obtenerContra = true;
 					while (obtenerContra) {
 						System.out.println("La contraseña debe:");
 						System.out.println("-Ser de entre 6 a 14 caracteres");
 						System.out.println("-Debe incluir al menos una letra, un número y un caracter especial (*,#,+,-,& etc.) ");
 						String password = input("Por favor ingrese la contraseña");
-						if (password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+,\\-./:;<=>?@\\[\\]^_`{|}~])[A-Za-z\\d!@#$%^&*()_+,\\-./:;<=>?@\\[\\]^_`{|}~]{6,14}$")) {
+						if (SecValidation.checkPassword(password)) {
 							boolean obtenerRol = true;
 							while (obtenerRol) {
 								System.out.println("Roles:\n1)Administrador\n2)Recepcionista");
@@ -120,10 +124,130 @@ public class Consola {
 	}
 
 	private static void recepcionista() {
-		printMenuRecepcionista();
+		boolean recepcionista = true;
+		while (recepcionista) {
+			try {
+				printMenuRecepcionista();
+				switch (Integer.parseInt(input("Selecciona una opción:"))) {
+				case 1:
+					reservar();
+					break;
+				case 2:
+					confirmarReserva();
+					break;
+				case 3:
+					confirmarReserva();
+					break;
+				case 4:
+					finalizarEstadia();
+					break;
+				case 5:
+					registrarConsumible();
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					recepcionista =false;
+					break;
+				default:
+					System.out.println("Es un número entre 1 y 8");
+					break;
+				}}
+			catch (NumberFormatException e) {
+				System.out.println("Por favor digite un Número Válido");
+			}
+			
+		}
 		
 	}
 
+	private static void registrarConsumible() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void finalizarEstadia() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void confirmarReserva() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void reservar() {
+		String nombre = input("Ingrese el nombre del titular");
+		String email = input("Ingrese el email del titular");
+		String dni = input("Ingrese el dni del titular");
+		Integer edad = Integer.parseInt(input("Ingrese la edad del titular"));
+		String telefono = input("Ingrese el teléfono del titular");
+		
+		Integer cantidad = Integer.parseInt(input("Ingrese la cantidad de personas"));
+		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
+		String fechaLlegada = fechaValida("Salida");
+		String fechaSalida = fechaValida("Llegada");
+		List<Integer> habitaciones=escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
+		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
+	}
+	
+	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2){
+		List<Integer> ids= new ArrayList<Integer>();
+
+		Boolean escogiendo=true;
+		
+		while (escogiendo) {
+			ids.add(selectHabs());
+			switch (Integer.parseInt(input("¿Quieres escoger otra habitación?\n1)Si\n2)No"))) {
+			case 1:
+				break;
+			case 2:
+				if (hotelSystem.calcularCapacidadTotal(ids)>= cantidad) {escogiendo= false;}
+				else {
+					System.out.println("Hay más personas que habitaciones, por favor escoge más habitaciones");}
+				break;
+			default:
+				System.out.println("Es un numero entre 1 y 2");
+				break;
+			}
+		}
+		return ids;
+		
+	}
+	private static Integer selectHabs() {
+		Integer count = 0;
+		
+		for (TipoHabitacion hab:hotelSystem.getOpcionesHabitacion()) {
+			System.out.println((count+1)+") nombre:"+hab.getAlias()
+			+"; capacidad:"+hab.getCapacidad() +"; con Cocina:"
+			+ (hab.getConCocina()? "Si":"No")+ "; con Balcón:"
+			+ (hab.getConBalcon()? "Si":"No") + "; con Vista:"
+			+ (hab.getConVista()? "Si":"No"));
+			count++;
+		}
+		Integer seleccion = Integer.parseInt(input("Selecciona la habitación, digite un número entre 1 y "+count));
+		if (seleccion <= count && seleccion>=1) 
+			{return hotelSystem.seleccionarHab(seleccion-1);}
+		else
+			{System.out.println("Selcciona un numero entre 1 y " +count);
+			selectHabs();}
+		return seleccion;
+		
+	}
+
+	private static String fechaValida(String message) {
+		Boolean escogiendo = true;
+		String fecha;
+		while (escogiendo) {
+			fecha = input("Ingrese la fecha de "+message);
+			if (SecValidation.checkDate(fecha)) {return fecha;}
+			else {System.out.println("Por favor ingrese una fecha válida");}
+		}
+		return null;
+	}
+	
 	private static void admin() {
 		printMenuAdministrador();
 		
@@ -136,9 +260,14 @@ public class Consola {
 
 	}
 	public static void printMenuRecepcionista() {
-		System.out.println("1) Check in");
-		System.out.println("2) Check out ");
-		System.out.println("3) Log Out");
+		System.out.println("1) Realizar una reserva");
+		System.out.println("2) Confirmar una reserva ");
+		System.out.println("3) Cancelar una reserva ");
+		System.out.println("4) Finalizar una estadia ");
+		System.out.println("5) Registrar un consumible");
+		System.out.println("6) Null");
+		System.out.println("7) null ");
+		System.out.println("8) Log Out");
 
 	}
 	public static void printMenuAdministrador() {

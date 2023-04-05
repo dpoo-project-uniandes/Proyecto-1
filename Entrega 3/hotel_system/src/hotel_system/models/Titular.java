@@ -3,10 +3,10 @@ package hotel_system.models;
 public class Titular extends Huesped {
 	
 	private String email;
-	private Integer telefono;
+	private String telefono;
 	
 	
-	public Titular(String nombre, Long dni, Integer edad, String email, Integer telefono) {
+	public Titular(String nombre, String dni, Integer edad, String email, String telefono) {
 		super(nombre, dni, edad);
 		this.email = email;
 		this.telefono = telefono;
@@ -23,12 +23,12 @@ public class Titular extends Huesped {
 	}
 
 
-	public Integer getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
 
-	public void setTelefono(Integer telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 }
