@@ -28,14 +28,6 @@ public class HotelManagementSystem {
 	private Map<String,Usuario> usuarios;
 	private List<Habitacion> inventarioHabitaciones;
 	private List<TipoHabitacion> opcionesHabitacion;
-	public List<TipoHabitacion> getOpcionesHabitacion() {
-		return opcionesHabitacion;
-	}
-
-	public void setOpcionesHabitacion(List<TipoHabitacion> opcionesHabitacion) {
-		this.opcionesHabitacion = opcionesHabitacion;
-	}
-
 	private List<Reserva> reservas;
 	private List<Estadia> registros;
 	private List<Producto> inventarioProductos;
@@ -263,5 +255,13 @@ public class HotelManagementSystem {
 
 	public void setInventarioServicios(List<Servicio> inventarioServicios) {
 		this.inventarioServicios = inventarioServicios;
+	}
+	
+	public List<TipoHabitacion> getOpcionesHabitacion() {
+		return opcionesHabitacion;
+	}
+
+	public void setOpcionesHabitacion(List<TipoHabitacion> opcionesHabitacion) {
+		this.opcionesHabitacion = opcionesHabitacion;
 	}
 }

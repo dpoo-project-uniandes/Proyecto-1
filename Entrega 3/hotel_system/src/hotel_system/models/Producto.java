@@ -1,7 +1,7 @@
 package hotel_system.models;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Producto implements Consumible{
 	
@@ -14,6 +14,25 @@ public class Producto implements Consumible{
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (getClass() != obj.getClass())
+			return false;
+		Producto other = (Producto) obj;
+		return Objects.equals(id, other.id) && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(precio, other.precio);
+	}
+
+	public Factura facturar(Huesped titular) {
+	    Factura factura = new Factura(titular, List.of(this));
+	    factura.procesarPago();
+	    return factura;
+	}
+	
+	public Double valor() {
+		return getPrecio();
 	}
 
 	public Long getId() {
@@ -39,16 +58,4 @@ public class Producto implements Consumible{
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
-	
-	
-  
-	public Factura facturar(Huesped titular) {
-		List<Consumible> consumibles = new ArrayList<>();
-		consumibles.add(this);
-		Double valorTotal = this.getPrecio();
-	    Factura factura = new Factura(titular, valorTotal, consumibles);
-	    factura.procesarPago();
-	    return factura;
-	}
-
 }

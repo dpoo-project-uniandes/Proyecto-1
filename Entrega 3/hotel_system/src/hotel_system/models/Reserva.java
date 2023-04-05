@@ -6,16 +6,17 @@ import java.util.List;
 import hotel_system.utils.Utils;
 
 public class Reserva {
-	Integer numero;
-	Double tarifaTotal;
-	EstadoReserva estado;
-	Integer cantidadPersonas;
-	Date fechaDeLlegada;
-	Date fechaDeSalida;
-	Date fechaDeCreacion;
-	Titular titular;
-	Estadia estadia;
-	List<Habitacion> habitaciones;
+	
+	private Integer numero;
+	private Double tarifaTotal;
+	private EstadoReserva estado;
+	private Integer cantidadPersonas;
+	private Date fechaDeLlegada;
+	private Date fechaDeSalida;
+	private Date fechaDeCreacion;
+	private Titular titular;
+	private Estadia estadia;
+	private List<Habitacion> habitaciones;
 	
 	public Reserva(Date fechaDeLlegada,Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
 		this.tarifaTotal=0.0;
@@ -27,6 +28,7 @@ public class Reserva {
 		this.estado= EstadoReserva.PENDIENTE;
 		this.habitaciones = habitaciones;
 	}
+	
 	public Double calcularTarifaTotal() {
 		//TODO
 		return 0.0;
@@ -42,7 +44,6 @@ public class Reserva {
 	}
 	private int generateID() {
 		return cantidadPersonas;
-		
 	}
 	
 	public void cancelarReserva() {
@@ -55,65 +56,84 @@ public class Reserva {
 					+ cantidadPersonas+", fecha de creación="+ Utils.stringDate(fechaDeCreacion)
 					+", fecha de llegada="+Utils.stringDate(fechaDeLlegada)+", fecha de salida=" + Utils.stringDate(fechaDeSalida) +"]";
 	}
+	
 	public Integer getNumero() {
 		return numero;
 	}
+	
 	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
+	
 	public Double getTarifaTotal() {
 		return tarifaTotal;
 	}
+	
 	public void setTarifaTotal(Double tarifaTotal) {
 		this.tarifaTotal = tarifaTotal;
 	}
+	
 	public EstadoReserva getEstado() {
 		return estado;
 	}
+	
 	public void setEstado(EstadoReserva estado) {
 		this.estado = estado;
 	}
+	
 	public Integer getCantidadPersonas() {
 		return cantidadPersonas;
 	}
+	
 	public void setCantidadPersonas(Integer cantidadPersonas) {
 		this.cantidadPersonas = cantidadPersonas;
 	}
+	
 	public Date getFechaDeLlegada() {
 		return fechaDeLlegada;
 	}
+	
 	public void setFechaDeLlegada(Date fechaDeLlegada) {
 		this.fechaDeLlegada = fechaDeLlegada;
 	}
+	
 	public Date getFechaDeSalida() {
 		return fechaDeSalida;
 	}
+	
 	public void setFechaDeSalida(Date fechaDeSalida) {
 		this.fechaDeSalida = fechaDeSalida;
 	}
+	
 	public Date getFechaDeCreacion() {
 		return fechaDeCreacion;
 	}
+	
 	public void setFechaDeCreacion(Date fechaDeCreacion) {
 		this.fechaDeCreacion = fechaDeCreacion;
 	}
+	
 	public Titular getTitular() {
 		return titular;
 	}
+	
 	public void setTitular(Titular titular) {
 		this.titular = titular;
 	}
+	
 	public Estadia getEstadia() {
 		return estadia;
 	}
+	
 	public void setEstadia(Estadia estadia) {
 		this.estadia = estadia;
 	}
+	
 	public List<Habitacion> getHabitaciones() {
 		return habitaciones;
 	}
+	
 	public void setHabitaciones(List<Habitacion> habitaciones) {
 		this.habitaciones = habitaciones;
 	}
-	
 }
