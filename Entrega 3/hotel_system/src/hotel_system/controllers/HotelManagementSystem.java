@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
@@ -158,11 +159,47 @@ public class HotelManagementSystem {
 	    }
 
 	
+	public Reserva getReservaById(String id) {
+		Optional<Reserva> reservacion = reservas.stream().filter(res -> (""+res.getNumero()).equals(id))
+						.findAny();
+		if (reservacion.isPresent()) {return reservacion.get();}
+		else {return null;}
+	}    
+	public Estadia getEstadiaById(String id) {
+		Optional<Estadia> registro = registros.stream().filter(reg -> (""+reg.getId()).equals(id))
+				.findAny();
+		if (registro.isPresent()) {return registro.get();}
+		else {return null;}
+	}
+	public Reserva getReservaByTitular(String nom) {
+		Optional<Reserva> reservacion = reservas.stream().filter(res -> res.getTitular().getNombre().equals(nom))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get();}
+		else {return null;}
+	}
+	public Estadia getEstadiaByTitular(String nom) {
+		Optional<Estadia> registro = registros.stream().filter(reg -> (reg.getReserva().getTitular()
+				.getNombre().equals(nom))).findAny();
+		if (registro.isPresent()) {return registro.get();}
+		else {return null;}
+	}
+	public Reserva getReservaByHabitacion(String id) {
+		Optional<Habitacion> reservacion = inventarioHabitaciones.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get().getReservaActual();}
+		else {return null;}
+	}
+	public Estadia getEstadiaByHabitacion(String id) {
+		Optional<Habitacion> reservacion = inventarioHabitaciones.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get().getReservaActual().getEstadia();}
+		else {return null;}
+	}
 	public boolean validad_usuario(String user) {
 		return usuarios.containsKey(user);
 	}
-	public Usuario validar_contraseña(String user, String password) {
-		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user); 
+	public String validar_contraseña(String user, String password) {
+		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString(); 
 		else return null;
 	}
 	
