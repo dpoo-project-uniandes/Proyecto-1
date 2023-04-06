@@ -113,7 +113,7 @@ public class HotelManagementSystem {
 	
 	private void cargarReservas() throws Exception{
 		FileManager.eliminarArchivo("reservas.csv");
-		FileManager.agregarLineasCSV("reservas.csv", List.of(List.of("numero_habitacion","fecha","estado","precio")));
+		FileManager.agregarLineasCSV("reservas.csv", List.of(List.of("numero","tarifaTotal","estado","cantidadPersonas","fechaCreacion","fechaLlegada","fechaSalida","titular_dni","numero_estadia")));
 		FileManager.eliminarArchivo("reservas_habitaciones.csv");
 		FileManager.agregarLineasCSV("reservas_habitaciones.csv", List.of(List.of("numero_reserva", "numero_habitacion")));
 		this.reservas = new ArrayList<Reserva>();
@@ -202,7 +202,9 @@ public class HotelManagementSystem {
 			,Integer edad, Integer cantidad, List<Integer> opcionHab, String llegada, String salida) throws Exception {
 		
 		Titular titular = new Titular(nombre, dni, edad, email, telefono);
+		
 		List<Habitacion> habitaciones = new ArrayList<Habitacion>();
+		
 		for (Integer num: opcionHab) {
 			habitaciones.add(inventarioHabitaciones.stream()
 					.filter(hab -> hab.getNumero() == num)
@@ -219,19 +221,19 @@ public class HotelManagementSystem {
 				reserva.getTarifaTotal().toString(),
 				reserva.getEstado().toString(),
 				reserva.getCantidadPersonas().toString(),
-				Utils.stringDate(reserva.getFechaDeCreacion()),
-				Utils.stringDate(reserva.getFechaDeLlegada()),
-				Utils.stringDate(reserva.getFechaDeSalida()),
+				Utils.stringLocalDate(reserva.getFechaDeCreacion()),
+				Utils.stringLocalDate(reserva.getFechaDeLlegada()),
+				Utils.stringLocalDate(reserva.getFechaDeSalida()),
 				reserva.getTitular().getDni().toString(),
-				reserva.getEstadia().getId().toString()
+				"0"
 				));
 		FileManager.agregarLineasCSV("reservas.csv", rowReserva);
 	}
 	
-	public Integer seleccionarHab(Integer select) {
+	public Integer seleccionarHab(Integer select, String desde, String hasta) {
 		String alias = opcionesHabitacion.get(select).getAlias();
 		return inventarioHabitaciones.stream()
-				.filter(hab -> hab.getTipo().getAlias().equals(alias))
+				.filter(hab -> hab.getTipo().getAlias().equals(alias) && hab.consultarDisponibilidad(Utils.stringToDate(desde), Utils.stringToDate(hasta)))
 				.findAny()
 				.get()
 				.getNumero();

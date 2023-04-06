@@ -310,17 +310,25 @@ public class Consola {
 		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
 		String fechaLlegada = fechaValida("Llegada");
 		String fechaSalida = fechaValida("Salida");
-		List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
-		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
+		try {
+			List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
+			hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2){
+	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2) throws Exception{
 		List<Integer> ids = new ArrayList<Integer>();
 
 		Boolean escogiendo = true;
 		
 		while (escogiendo) {
-			ids.add(selectHabs());
+			Integer idHabitacion = selectHabs(fecha1, fecha2);
+			if (idHabitacion == 0) {
+				throw new Exception("Lo sentimos, no hay disponibilidad para el tipo de habitacion seleccionado");
+			}
+			ids.add(idHabitacion);
 			switch (Integer.parseInt(input("¿Quieres escoger otra habitación?\n1)Si\n2)No"))) {
 			case 1:
 				break;
@@ -337,11 +345,11 @@ public class Consola {
 				break;
 			}
 		}
-		return ids;
 		
+		return ids;
 	}
 	
-	private static Integer selectHabs() {
+	private static Integer selectHabs(String desde, String hasta) {
 		Integer count = 0;
 		
 		for (TipoHabitacion hab:hotelSystem.getOpcionesHabitacion()) {
@@ -355,11 +363,15 @@ public class Consola {
 		
 		Integer seleccion = Integer.parseInt(input("Selecciona la habitación, digite un número entre 1 y "+count));
 		if (seleccion <= count && seleccion>=1) {
-			return hotelSystem.seleccionarHab(seleccion-1);
-		}
-		else {
+			try {
+				return hotelSystem.seleccionarHab(seleccion-1, desde, hasta);
+			} catch(Exception e) {
+				e.printStackTrace();
+				return 0;
+			}
+		} else {
 			System.out.println("Selcciona un numero entre 1 y " +count);
-			selectHabs();
+			selectHabs(desde, hasta);
 		}
 		return seleccion;
 		
