@@ -39,6 +39,7 @@ public class HotelManagementSystem {
 	public HotelManagementSystem()  {
 		try {
 			cargarTipoHabitaciones();
+			cargarDisponibilidades();
 			cargarHabitaciones();
 			cargarReservas();
 			//this.registros = cargarEstadias();
@@ -79,16 +80,14 @@ public class HotelManagementSystem {
 					.filter(th -> th.getAlias().equals(dato.get("tipo_habitacion")))
 					.findAny()
 					.get();
-			List<Disponibilidad> disponibilidad = cargarDisponibilidades(numeroHabitacion, tipo.getPrecio());
+			List<Disponibilidad> disponibilidad = cargarDisponibilidad(numeroHabitacion, tipo.getPrecio());
 			Habitacion habitacion = new Habitacion(numeroHabitacion, tipo, disponibilidad);
 			habitaciones.add(habitacion);
 		}
 		this.setInventarioHabitaciones(habitaciones);
 	}
 	
-	private List<Disponibilidad> cargarDisponibilidades(Integer numeroHabitacion, Double precio) throws Exception {
-		FileManager.eliminarArchivo("disponibilidades.csv");
-		FileManager.agregarLineasCSV("disponibilidades.csv", List.of(List.of("numero_habitacion","fecha","estado","precio")));
+	private List<Disponibilidad> cargarDisponibilidad(Integer numeroHabitacion, Double precio) throws Exception {
 		List<Disponibilidad> disponibilidad = new ArrayList<>();
 		List<List<String>> datos = new ArrayList<>();
 		Date hoy = Utils.nowDate();
@@ -100,6 +99,11 @@ public class HotelManagementSystem {
 		}
 		FileManager.agregarLineasCSV("disponibilidades.csv", datos);
 		return disponibilidad;
+	}
+	
+	private void cargarDisponibilidades() throws Exception {
+		FileManager.eliminarArchivo("disponibilidades.csv");
+		FileManager.agregarLineasCSV("disponibilidades.csv", List.of(List.of("numero_habitacion","fecha","estado","precio")));
 	}
 	
 	private void cargarUsuarios() throws Exception {
