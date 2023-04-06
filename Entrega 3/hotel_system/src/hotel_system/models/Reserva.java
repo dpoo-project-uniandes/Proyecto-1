@@ -55,19 +55,8 @@ public class Reserva {
 	@Override
 	public String toString() {
 		return "Reserva [numero=" + numero +", estado="+estado.toString()+", tarifa total=" + tarifaTotal + ", cantidad de personas=" 
-					+ cantidadPersonas+", fecha de creación="+ Utils.stringDate(fechaDeCreacion)
-					+", fecha de llegada="+Utils.stringDate(fechaDeLlegada)+", fecha de salida=" + Utils.stringDate(fechaDeSalida) +"]";
-	}
-	public String toCsv() {
-		return  numero+";"+tarifaTotal+";"+estado.toString()+""+cantidadPersonas+";"+fechaDeCreacion+";"+fechaDeLlegada
-				+";"+fechaDeSalida +";"+titular.toString()+";"+((estadia == null)? "null":""+estadia.getId()+";"+strHabitaciones());
-	}
-	
-	private String strHabitaciones() {
-		String msg="";
-		for (Habitacion hab : habitaciones) {
-			msg+=","+hab.getNumero();
-		}return new String(msg.substring(1));
+					+ cantidadPersonas+", fecha de creación="+ Utils.stringLocalDate(fechaDeCreacion)
+					+", fecha de llegada="+Utils.stringLocalDate(fechaDeLlegada)+", fecha de salida=" + Utils.stringLocalDate(fechaDeSalida) +"]";
 	}
 	
 	public Long getNumero() {

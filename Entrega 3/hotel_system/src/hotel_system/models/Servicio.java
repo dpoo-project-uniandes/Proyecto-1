@@ -1,5 +1,6 @@
 package hotel_system.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Servicio implements Consumible {
@@ -10,13 +11,13 @@ public abstract class Servicio implements Consumible {
 	public Servicio(Long id) {
 		super();
 		this.id = id;
+		this.productosConsumidos = new ArrayList<>();
 	}
 	
 	@Override
 	public Factura facturar(Huesped titular) {
 	    Factura factura = new Factura(titular, getConsumo());
 	    factura.procesarPago();
-	    this.productosConsumidos = List.of();
 	    return factura;
 	}
 	

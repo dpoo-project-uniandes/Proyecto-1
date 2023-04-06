@@ -43,7 +43,7 @@ public class HotelManagementSystem {
 			cargarDisponibilidades();
 			cargarHabitaciones();
 			cargarReservas();
-			//this.registros = cargarEstadias();
+			cargarEstadias();
 			cargarProductos();
 			cargarServicios();
 			cargarUsuarios();
@@ -92,7 +92,7 @@ public class HotelManagementSystem {
 		List<Disponibilidad> disponibilidad = new ArrayList<>();
 		List<List<String>> datos = new ArrayList<>();
 		Date hoy = Utils.nowDate();
-		for(int d = 1; d <= 365; d++) {
+		for(int d = 0; d <= 365; d++) {
 			LocalDate tomorrow = hoy.toLocalDate().plusDays(d);
 			List<String> lista = List.of(numeroHabitacion.toString(), Utils.stringLocalDate(Date.valueOf(tomorrow)), "true", precio.toString());
 			datos.add(lista);
@@ -122,6 +122,10 @@ public class HotelManagementSystem {
 		FileManager.eliminarArchivo("reservas_habitaciones.csv");
 		FileManager.agregarLineasCSV("reservas_habitaciones.csv", List.of(List.of("numero_reserva", "numero_habitacion")));
 		this.reservas = new ArrayList<Reserva>();
+	}
+	
+	private void cargarEstadias(){
+		this.registros = new ArrayList<>();
 	}
 	
 	private void cargarProductos() throws Exception {
@@ -189,11 +193,6 @@ public class HotelManagementSystem {
 				datos[4]);
 	}
 	
-	private List<Estadia> cargarEstadias(){
-		return registros;
-		
-	}
-	
 	public Integer calcularCapacidadTotal(List<Integer> ids) {
 		Integer count = 0;
 		for (Integer id:ids) {
@@ -232,6 +231,7 @@ public class HotelManagementSystem {
 				reserva.getTitular().getDni().toString(),
 				"0"
 				));
+		
 		FileManager.agregarLineasCSV("reservas.csv", rowReserva);
 	}
 	
@@ -286,6 +286,14 @@ public class HotelManagementSystem {
 		else {return null;}
 	}
 	
+	public Estadia getEstadiaByDNI(String dni) {
+		Optional<Estadia> reservacion = registros.stream()
+				.filter(estadia -> estadia.getReserva().getTitular().getDni().equals(dni))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get();}
+		else {return null;}
+	}
+	
 	public Reserva getReservaByHabitacion(String id) {
 		Optional<Habitacion> reservacion = inventarioHabitaciones
 				.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
@@ -295,10 +303,10 @@ public class HotelManagementSystem {
 	}
 	
 	public Estadia getEstadiaByHabitacion(String id) {
-		Optional<Habitacion> reservacion = inventarioHabitaciones.stream()
-				.filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+		Optional<Habitacion> habitacion = inventarioHabitaciones.stream()
+				.filter(hab -> (hab.getNumero().toString()).equals(id))
 				.findAny();
-		if (reservacion.isPresent()) {return reservacion.get().getReservaActual().getEstadia();}
+		if (habitacion.isPresent()) {return habitacion.get().getReservaActual().getEstadia();}
 		else {return null;}
 	}
 	
@@ -396,9 +404,9 @@ public class HotelManagementSystem {
 		}		
 	}
 
-	public void iniciarEstadia(String dni, List<List<String>> huesp) {
+	public List<Integer> iniciarEstadia(String dni, List<List<String>> huesp) {
 		Reserva reserva = getReservaByDNI(dni);
-		List<Huesped> huespedes = new ArrayList<Huesped>();
+		List<Huesped> huespedes = new ArrayList<>();
 		huespedes.add(reserva.getTitular());
 		for (List<String> huesped : huesp) {
 			huespedes.add(new Huesped(huesped.get(0), 
@@ -409,11 +417,14 @@ public class HotelManagementSystem {
 		reserva.setEstadia(estadia);
 		registros.add(estadia);
 		
+		return reserva.getHabitaciones().stream().map(h -> h.getNumero()).toList();
 	}
 
 	public void finalizarEstadia(String dni) {
-		// TODO Auto-generated method stub
-		
+		Estadia estadia = getEstadiaByDNI(dni);
+		estadia.facturarEstadia();
+		Factura factura = estadia.getFacturaTotal();
+		System.out.println(factura.generarFactura());
 	}
 
 	public Integer cantidadReserva(String dni) {

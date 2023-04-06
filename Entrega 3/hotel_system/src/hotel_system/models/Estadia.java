@@ -1,6 +1,7 @@
 package hotel_system.models;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import hotel_system.utils.Utils;
@@ -22,11 +23,17 @@ public class Estadia {
 		this.fechaSalida = fechaSalida;
 		this.facturaTotal = new Factura(reserva.getTitular());
 		this.huespedes = huespedes;
-		this.facturas = List.of();
+		this.facturas = new ArrayList<>();
 	}
 	
 	public void facturarEstadia() {
-
+		Alojamiento alojamiento = new Alojamiento(Utils.generateId(), reserva.getHabitaciones(), fechaIngreso, fechaSalida);
+		for (Consumible c : alojamiento.getConsumo()) {
+			cargarConsumo(c);
+		}
+		this.reserva.setEstado(EstadoReserva.CERRADO);
+		this.facturaTotal.calcularValorTotal();
+		this.facturaTotal.procesarPago();
 	}
 	
 	public void cargarFactura(Factura factura) {
@@ -75,5 +82,21 @@ public class Estadia {
 
 	public void setFechaSalida(Date fechaSalida) {
 		this.fechaSalida = fechaSalida;
+	}
+
+	public Factura getFacturaTotal() {
+		return facturaTotal;
+	}
+
+	public void setFacturaTotal(Factura facturaTotal) {
+		this.facturaTotal = facturaTotal;
+	}
+
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
 	}
 }

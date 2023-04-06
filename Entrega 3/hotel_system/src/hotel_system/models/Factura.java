@@ -1,5 +1,6 @@
 package hotel_system.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hotel_system.utils.Utils;
@@ -13,29 +14,29 @@ public class Factura {
 	
 	public Factura(Huesped titular, List<Consumible> consumibles) {
 		this.titular = titular;
-		this.valorTotal = calcularValorTotal(consumibles);
 		this.consumibles = consumibles;
+		calcularValorTotal();
 	}
 	
 	public Factura(Huesped titular) {
 		this.titular = titular;
 		this.valorTotal = 0.0;
-		this.consumibles = List.of();
+		this.consumibles = new ArrayList<>();
 	}
 	
-	private Double calcularValorTotal(List<Consumible> consumibles) {
+	public void calcularValorTotal() {
 		Double valorTotal = 0.0;
-		for (Consumible consumible : consumibles) {
+		for (Consumible consumible : this.consumibles) {
 			valorTotal += consumible.valor();
 		}
-		return valorTotal;
+		this.valorTotal = valorTotal;
 	}
 	
 	public String generarFactura() {
-		return String.format("%s;%d;%s;%s;%.2f;%s",
+		return String.format("%s;%s;%s;%s;%.2f;%b",
 				this.titular.getNombre(),
 				this.titular.getDni(),
-				Utils.stringDate(Utils.nowDate()), 
+				Utils.stringLocalDate(Utils.nowDate()), 
 				consumibles.toString(), 
 				valorTotal,
 				pago != null);

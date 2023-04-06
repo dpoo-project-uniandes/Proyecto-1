@@ -172,15 +172,16 @@ public class Consola {
 			String edad;
 			String dni = input("Ingrese el dni del titular:");
 			Integer cantidad = hotelSystem.cantidadReserva(dni);
-			List<List<String>> acompañantes= List.of(List.of());
-			for  (Integer count=1 ;count<cantidad; count++) {
+			List<List<String>> acompañantes= new ArrayList<>();
+			for  (Integer count = 1 ; count<cantidad; count++) {
 				nombre = input("Ingrese el nombre de su acompañante");
 				dniHuesped = input("Ingrese el DNI de su acompañante");
 				edad = input("Ingrese la edad de su acompañante");
 				acompañantes.add(List.of(nombre, dniHuesped, edad));
 			}
-			hotelSystem.iniciarEstadia(dni, acompañantes);
+			List<Integer> habitaciones = hotelSystem.iniciarEstadia(dni, acompañantes);
 			System.out.println("Se inició la estadía con exito");
+			System.out.println("Sus habitaciones son: " + habitaciones.toString());
 		}catch (Exception e) {
 			System.out.println("No se encontró la reserva, por favor, inténtelo de nuevo");
 		}
@@ -201,7 +202,7 @@ public class Consola {
 		try {
 			String dni = input("Ingrese el dni del titular:");
 			hotelSystem.finalizarEstadia(dni);
-			System.out.println("Se canceló la reserva con exito");
+			System.out.println("Se finalizo la estadia con exito");
 		}catch (Exception e) {
 			System.out.println("No se encontró la estadia, por favor, inténtelo de nuevo");
 		}
@@ -252,7 +253,7 @@ public class Consola {
 			}
 			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
 			if (seleccion <= count && seleccion >= 1) {
-				consumos.add(productos.get(seleccion));
+				consumos.add(productos.get(seleccion - 1));
 			}
 			else {
 				System.out.println("Selcciona un numero entre 1 y " +count);
@@ -280,7 +281,7 @@ public class Consola {
 			}
 			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
 			if (seleccion <= count && seleccion >= 1) {
-				consumos.add(productos.get(seleccion));
+				consumos.add(productos.get(seleccion - 1));
 			}
 			else {
 				System.out.println("Selcciona un numero entre 1 y " +count);
@@ -308,7 +309,7 @@ public class Consola {
 			}
 			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
 			if (seleccion <= count && seleccion >= 1) {
-				consumos.add(productos.get(seleccion));
+				consumos.add(productos.get(seleccion - 1));
 			}
 			else {
 				System.out.println("Selcciona un numero entre 1 y " +count);
@@ -333,8 +334,6 @@ public class Consola {
 
 	}
 
-	
-
 	private static void reservar() throws Exception {
 		String nombre = input("Ingrese el nombre del titular");
 		String email = input("Ingrese el email del titular");
@@ -346,12 +345,8 @@ public class Consola {
 		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
 		String fechaLlegada = fechaValida("Llegada");
 		String fechaSalida = fechaValida("Salida");
-		try {
-			List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
-			hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
+		List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
+		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
 	}
 	
 	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2) throws Exception{

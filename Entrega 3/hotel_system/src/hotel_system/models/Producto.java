@@ -25,6 +25,11 @@ public class Producto implements Consumible{
 				&& Objects.equals(precio, other.precio);
 	}
 
+	@Override
+	public String toString() {
+		return "Producto [id=" + id + ", nombre=" + nombre + ", precio=" + precio + "]";
+	}
+
 	public Factura facturar(Huesped titular) {
 	    Factura factura = new Factura(titular, List.of(this));
 	    factura.procesarPago();
