@@ -22,7 +22,6 @@ public class Utils {
 	    return Date.valueOf(localDate);
 	}
 	
-	
 	public static final String stringLocalDate(Date date) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		return dtf.format(date.toLocalDate());
@@ -31,5 +30,9 @@ public class Utils {
 	public static final Integer sustractDates(Date date1, Date date2) {
 		Long diffInMillies = Math.abs(date2.getTime() - date1.getTime());
 		return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+	}
+	
+	public static final Long generateId() {
+		return nowDate().getTime();
 	}
 }

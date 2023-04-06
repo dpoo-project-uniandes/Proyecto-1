@@ -42,16 +42,26 @@ public class Habitacion {
 		return false;
 	}
 	
-	public Boolean modificarDisponibilidad(Date desde, Date hasta, Reserva reserva) {
+	public Boolean modificarDisponibilidad(Date desde, Date hasta, Reserva reserva, Boolean estado) {
 		if (consultarDisponibilidad(desde, hasta)) {
 			for(Integer i : rangoDeFechasAIndices(desde, hasta)) {
 				Disponibilidad disponibilidad = this.disponibilidad.get(i);
-				disponibilidad.setEstado(false);
+				disponibilidad.setEstado(estado);
 				disponibilidad.setReserva(reserva);
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	public Double calcularTarifa(Date desde, Date hasta) {
+		Double tarifa = 0.0;
+		for(Integer i : rangoDeFechasAIndices(desde, hasta)) {
+			System.out.println(rangoDeFechasAIndices(desde, hasta));
+			Disponibilidad disponibilidad = this.disponibilidad.get(i);
+			tarifa += disponibilidad.getPrecio();
+		}
+		return tarifa;
 	}
 	
 	@Override
@@ -78,6 +88,7 @@ public class Habitacion {
 	public void setTipo(TipoHabitacion tipo) {
 		this.tipo = tipo;
 	}
+	
 	public Reserva getReservaActual() {
 		try {
 		  return disponibilidad.stream()

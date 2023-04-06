@@ -7,7 +7,7 @@ import hotel_system.utils.Utils;
 
 public class Reserva {
 	
-	private Integer numero;
+	private Long numero;
 	private Double tarifaTotal;
 	private EstadoReserva estado;
 	private Integer cantidadPersonas;
@@ -18,37 +18,38 @@ public class Reserva {
 	private Estadia estadia;
 	private List<Habitacion> habitaciones;
 	
-	public Reserva(Date fechaDeLlegada,Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
-		this.tarifaTotal=0.0;
-		this.fechaDeLlegada=fechaDeLlegada;
-		this.fechaDeCreacion=Utils.nowDate();
-		this.estadia = null;
+	public Reserva(Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
+		this.numero = Utils.generateId();
+		this.fechaDeLlegada = fechaDeLlegada;
+		this.fechaDeCreacion = Utils.nowDate();
 		this.cantidadPersonas = cantidad;
 		this.fechaDeSalida = fechaDeSalida;
 		this.titular = titular;
-		this.estado= EstadoReserva.PENDIENTE;
 		this.habitaciones = habitaciones;
+		this.tarifaTotal = calcularTarifaTotal();
+		confirmarReserva();
 	}
 	
 	public Double calcularTarifaTotal() {
-		//TODO
-		return 0.0;
+		Double valorTotal = 0.0;
+		for (Habitacion hab: habitaciones) {
+			valorTotal += hab.calcularTarifa(fechaDeLlegada, fechaDeSalida);
+		}
+		return valorTotal;
 	}
 	
-	public void confirmarReserva(Estadia estadia) {
+	public void confirmarReserva() {
 		this.estado = EstadoReserva.CONFIRMADO;
 		for (Habitacion hab: habitaciones) {
-			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, this);
+			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, this, true);
 		}
-		this.estadia = estadia;
-
-	}
-	private int generateID() {
-		return cantidadPersonas;
 	}
 	
 	public void cancelarReserva() {
 		this.estado = EstadoReserva.CANCELADO;
+		for (Habitacion hab: habitaciones) {
+			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, null, false);
+		}
 	}
 	
 	@Override
@@ -62,17 +63,18 @@ public class Reserva {
 				+";"+fechaDeSalida +";"+titular.toString()+";"+((estadia == null)? "null":""+estadia.getId()+";"+strHabitaciones());
 	}
 	
-	public Integer getNumero() {
-		return numero;
-	}
-	
 	private String strHabitaciones() {
 		String msg="";
 		for (Habitacion hab : habitaciones) {
 			msg+=","+hab.getNumero();
 		}return new String(msg.substring(1));
 	}
-	public void setNumero(Integer numero) {
+	
+	public Long getNumero() {
+		return numero;
+	}
+	
+	public void setNumero(Long numero) {
 		this.numero = numero;
 	}
 	

@@ -91,7 +91,7 @@ public class Consola {
 		
 	}
 
-	public static void ingresar() {
+	public static void ingresar() throws Exception {
 		boolean ingresando = true;
 		while(ingresando) {
 			try {
@@ -125,7 +125,7 @@ public class Consola {
 		
 	}
 
-	private static void recepcionista() {
+	private static void recepcionista() throws Exception {
 		boolean recepcionista = true;
 		while (recepcionista) {
 			try {
@@ -138,7 +138,6 @@ public class Consola {
 					cancelarReserva();
 					break;
 				case 3:
-					confirmarReserva();
 					break;
 				case 4:
 					finalizarEstadia();
@@ -300,12 +299,7 @@ public class Consola {
 		
 	}
 
-	private static void confirmarReserva() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private static void reservar() {
+	private static void reservar() throws Exception {
 		String nombre = input("Ingrese el nombre del titular");
 		String email = input("Ingrese el email del titular");
 		String dni = input("Ingrese el dni del titular");
@@ -316,14 +310,14 @@ public class Consola {
 		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
 		String fechaLlegada = fechaValida("Llegada");
 		String fechaSalida = fechaValida("Salida");
-		List<Integer> habitaciones=escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
+		List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
 		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
 	}
 	
 	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2){
-		List<Integer> ids= new ArrayList<Integer>();
+		List<Integer> ids = new ArrayList<Integer>();
 
-		Boolean escogiendo=true;
+		Boolean escogiendo = true;
 		
 		while (escogiendo) {
 			ids.add(selectHabs());
@@ -331,9 +325,12 @@ public class Consola {
 			case 1:
 				break;
 			case 2:
-				if (hotelSystem.calcularCapacidadTotal(ids)>= cantidad) {escogiendo= false;}
+				if (hotelSystem.calcularCapacidadTotal(ids)>= cantidad) {
+					escogiendo= false;
+				}
 				else {
-					System.out.println("Hay más personas que habitaciones, por favor escoge más habitaciones");}
+					System.out.println("Hay más personas que habitaciones, por favor escoge más habitaciones");
+				}
 				break;
 			default:
 				System.out.println("Es un numero entre 1 y 2");
@@ -343,6 +340,7 @@ public class Consola {
 		return ids;
 		
 	}
+	
 	private static Integer selectHabs() {
 		Integer count = 0;
 		
@@ -354,12 +352,15 @@ public class Consola {
 			+ (hab.getConVista()? "; Con Vista":""));
 			count++;
 		}
+		
 		Integer seleccion = Integer.parseInt(input("Selecciona la habitación, digite un número entre 1 y "+count));
-		if (seleccion <= count && seleccion>=1) 
-			{return hotelSystem.seleccionarHab(seleccion-1);}
-		else
-			{System.out.println("Selcciona un numero entre 1 y " +count);
-			selectHabs();}
+		if (seleccion <= count && seleccion>=1) {
+			return hotelSystem.seleccionarHab(seleccion-1);
+		}
+		else {
+			System.out.println("Selcciona un numero entre 1 y " +count);
+			selectHabs();
+		}
 		return seleccion;
 		
 	}

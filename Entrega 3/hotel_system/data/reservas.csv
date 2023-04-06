@@ -1,1 +1,1 @@
-numero;tarifaTotal;estado;cantidadPersonas;fechaCreacion;fechaLlegada;fechaSalida;titular;estadia;habitaciones
+numero_habitacion,fecha,estado,precio
