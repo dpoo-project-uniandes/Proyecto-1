@@ -13,6 +13,7 @@ import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
+import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Reserva;
@@ -269,9 +270,9 @@ public class HotelManagementSystem {
 		else {return null;}
 	}
 	
-	public Reserva getReservaByTitular(String nom) {
+	public Reserva getReservaByDNI(String dni) {
 		Optional<Reserva> reservacion = reservas.stream()
-				.filter(res -> res.getTitular().getNombre().equals(nom))
+				.filter(res -> res.getTitular().getDni().equals(dni))
 				.findAny();
 		if (reservacion.isPresent()) {return reservacion.get();}
 		else {return null;}
@@ -314,6 +315,10 @@ public class HotelManagementSystem {
 		usuarios.put(user, new Usuario(user, password, rol));
 		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
 		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
+	}
+	
+	public void cancelarReserva(String dni) {
+		getReservaByDNI(dni).cancelarReserva();;
 	}
 
 	public List<Habitacion> getInventarioHabitaciones() {
@@ -389,5 +394,29 @@ public class HotelManagementSystem {
 				estadia.cargarConsumo(consumible);
 			}
 		}		
+	}
+
+	public void iniciarEstadia(String dni, List<List<String>> huesp) {
+		Reserva reserva = getReservaByDNI(dni);
+		List<Huesped> huespedes = new ArrayList<Huesped>();
+		huespedes.add(reserva.getTitular());
+		for (List<String> huesped : huesp) {
+			huespedes.add(new Huesped(huesped.get(0), 
+					huesped.get(1), 
+					Integer.parseInt(huesped.get(2))));
+		}
+		Estadia estadia = new Estadia(reserva, reserva.getFechaDeLlegada(), reserva.getFechaDeSalida(), huespedes);
+		reserva.setEstadia(estadia);
+		registros.add(estadia);
+		
+	}
+
+	public void finalizarEstadia(String dni) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Integer cantidadReserva(String dni) {
+		return getReservaByDNI(dni).getCantidadPersonas();
 	}
 }

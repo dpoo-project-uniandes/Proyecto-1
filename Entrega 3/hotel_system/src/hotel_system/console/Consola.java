@@ -138,6 +138,7 @@ public class Consola {
 					cancelarReserva();
 					break;
 				case 3:
+					iniciarEstadia();
 					break;
 				case 4:
 					finalizarEstadia();
@@ -164,8 +165,46 @@ public class Consola {
 		
 	}
 
+	private static void iniciarEstadia() {
+		try {
+			String nombre;
+			String dniHuesped;
+			String edad;
+			String dni = input("Ingrese el dni del titular:");
+			Integer cantidad = hotelSystem.cantidadReserva(dni);
+			List<List<String>> acompañantes= List.of(List.of());
+			for  (Integer count=1 ;count<cantidad; count++) {
+				nombre = input("Ingrese el nombre de su acompañante");
+				dniHuesped = input("Ingrese el DNI de su acompañante");
+				edad = input("Ingrese la edad de su acompañante");
+				acompañantes.add(List.of(nombre, dniHuesped, edad));
+			}
+			hotelSystem.iniciarEstadia(dni, acompañantes);
+			System.out.println("Se inició la estadía con exito");
+		}catch (Exception e) {
+			System.out.println("No se encontró la reserva, por favor, inténtelo de nuevo");
+		}
+		
+	}
+
 	private static void cancelarReserva() {
-		// TODO Auto-generated method stub
+		try {
+			String dni = input("Ingrese el dni del titular:");
+			hotelSystem.cancelarReserva(dni);
+			System.out.println("Se canceló la reserva con exito");
+		}catch (Exception e) {
+			System.out.println("No se encontró la reserva, por favor, inténtelo de nuevo");
+		}
+		
+	}
+	private static void finalizarEstadia() {
+		try {
+			String dni = input("Ingrese el dni del titular:");
+			hotelSystem.finalizarEstadia(dni);
+			System.out.println("Se canceló la reserva con exito");
+		}catch (Exception e) {
+			System.out.println("No se encontró la estadia, por favor, inténtelo de nuevo");
+		}
 		
 	}
 
@@ -294,10 +333,7 @@ public class Consola {
 
 	}
 
-	private static void finalizarEstadia() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	private static void reservar() throws Exception {
 		String nombre = input("Ingrese el nombre del titular");
@@ -401,8 +437,8 @@ public class Consola {
 	}
 	public static void printMenuRecepcionista() {
 		System.out.println("1) Realizar una reserva");
-		System.out.println("2) Confirmar una reserva ");
-		System.out.println("3) Cancelar una reserva ");
+		System.out.println("2) Cancelar una reserva ");
+		System.out.println("3) Iniciar una estadia ");
 		System.out.println("4) Finalizar una estadia ");
 		System.out.println("5) Registrar un consumible");
 		System.out.println("6) Null");
