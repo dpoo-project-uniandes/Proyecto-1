@@ -7,20 +7,21 @@ import hotel_system.utils.Utils;
 
 public class Estadia {
 	
-	Integer id;
+	Long id;
 	Reserva reserva;
 	Date fechaIngreso;
 	Date fechaSalida;
 	Factura facturaTotal;
 	List<Factura> facturas;
+	List<Huesped> huespedes;
 	
-	public Estadia(Integer id, Reserva reserva, Date fechaIngreso, Date fechaSalida) {
-		super();
-		this.id = id;
+	public Estadia(Reserva reserva, Date fechaIngreso, Date fechaSalida, List<Huesped> huespedes) {
+		this.id = Utils.generateId();
 		this.reserva = reserva;
-		this.fechaIngreso = Utils.nowDate();
+		this.fechaIngreso = fechaIngreso;
 		this.fechaSalida = fechaSalida;
 		this.facturaTotal = new Factura(reserva.getTitular());
+		this.huespedes = huespedes;
 		this.facturas = List.of();
 	}
 	
@@ -32,15 +33,23 @@ public class Estadia {
 		this.facturas.add(factura);
 	}
 	
+	public List<Huesped> getHuespedes() {
+		return huespedes;
+	}
+
+	public void setHuespedes(List<Huesped> huespedes) {
+		this.huespedes = huespedes;
+	}
+
 	public void cargarConsumo(Consumible consumo) {
 		this.facturaTotal.agregarConsumible(consumo);
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
