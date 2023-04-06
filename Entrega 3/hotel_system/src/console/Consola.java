@@ -135,7 +135,7 @@ public class Consola {
 					reservar();
 					break;
 				case 2:
-					confirmarReserva();
+					cancelarReserva();
 					break;
 				case 3:
 					confirmarReserva();
@@ -162,6 +162,11 @@ public class Consola {
 			}
 			
 		}
+		
+	}
+
+	private static void cancelarReserva() {
+		// TODO Auto-generated method stub
 		
 	}
 
