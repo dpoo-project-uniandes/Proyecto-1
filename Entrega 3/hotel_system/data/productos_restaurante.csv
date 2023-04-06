@@ -1,4 +1,4 @@
-﻿id,nombre,precio,fechaInicial,fechaFinal,alCuarto,tipo
+id,nombre,precio,fechaInicial,fechaFinal,alCuarto,tipo
 46921,gaseosa,50,2023/04/05,2023/04/12,false,producto
 27776,jugo,22,2023/05/15,2023/05/22,false,producto
 12097,cerveza,50,2023/06/10,2023/06/17,false,profucto

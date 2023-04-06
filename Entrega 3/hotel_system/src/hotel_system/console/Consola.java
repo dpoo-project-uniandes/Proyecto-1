@@ -1,4 +1,4 @@
-package console;
+package hotel_system.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.models.Consumible;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Rol;
 import hotel_system.models.TipoHabitacion;
-import hotel_system.models.Usuario;
 import services.SecValidation;
 
 public class Consola {
 	
 	public static HotelManagementSystem hotelSystem = new HotelManagementSystem();
 	
-	public static void main(String[] args ) {
+	public static void main(String[] args ) throws Exception {
 		bienvenida();
 		boolean escogiendo = true;
 		while(escogiendo) {
@@ -37,7 +37,7 @@ public class Consola {
 		
 	}
 	
-	private static void registrar() {
+	private static void registrar() throws Exception {
 		boolean registrando = true;
 		while(registrando) {
 			try {
@@ -57,9 +57,9 @@ public class Consola {
 							while (obtenerRol) {
 								System.out.println("Roles:\n1)Administrador\n2)Recepcionista");
 								String rolEscogido = input("Ingresa un número entre 1 y 2");
-								if (rolEscogido.equals("1")) {hotelSystem.registrar_usuario(user, password, Rol.ADMIN);
+								if (rolEscogido.equals("1")) {hotelSystem.registrarUsuario(user, password, Rol.ADMIN);
 								obtenerContra = false;registrando = false; obtenerRol=false;break;}
-								else if (rolEscogido.equals("2")) {hotelSystem.registrar_usuario(user, password, Rol.RECEPCIONISTA);
+								else if (rolEscogido.equals("2")) {hotelSystem.registrarUsuario(user, password, Rol.RECEPCIONISTA);
 								obtenerContra = false;registrando = false; obtenerRol=false;break;}
 								else {System.out.println("Recuerda que es un número entre 1 y 2");
 								int opcion_seleccionada = Integer.parseInt(input("¿Deseas intentarlo de nuevo?\n1)Si\n2)No"));
@@ -96,11 +96,11 @@ public class Consola {
 		while(ingresando) {
 			try {
 				String user = input("Por favor ingrese su nombre de usuario");
-				if (hotelSystem.validad_usuario(user)) {
+				if (hotelSystem.validadUsuario(user)) {
 					boolean accediendo = true;
 					while (accediendo) {
 						String password = input("Por favor ingrese su contraseña");
-						String rol = hotelSystem.validar_contraseña(user, password);
+						String rol = hotelSystem.validarContrasenia(user, password);
 						if (rol != null) {
 							if (rol.equals("ADMIN")) {admin();}
 							else if (rol.equals("RECEPCIONISTA")) {recepcionista();}
@@ -173,6 +173,7 @@ public class Consola {
 	private static void registrarConsumible() {
 		Boolean escogiendo = true;
 		while (escogiendo) {
+			printConsumos();
 			try {
 				switch (Integer.parseInt(input("Selecciona una opción:"))){
 					case 1:
@@ -200,69 +201,90 @@ public class Consola {
 		}
 		
 	}
+	
 	private static void producto() {
 		Boolean consumiendo = true;
+		List<Consumible> consumos = new ArrayList<>();
+		List<Producto> productos = hotelSystem.getInventarioProductos();
 		while (consumiendo) {
-		Integer count = 0; 
-		for(Producto producto: hotelSystem.getInventarioProductos()){
-			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
-			count++;
+			Integer count = 0;
+			for(Producto producto: productos){
+				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+				count++;
 			}
-		Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
-		if (seleccion <= count && seleccion>=1) 
-			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
-			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
-			hotelSystem.seleccionarProducto(seleccion-1, hab, pagar );}
-		else
-			{System.out.println("Selcciona un numero entre 1 y " +count);
-			producto();}
-		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
-		else {consumiendo=false;}	
-	}
-		
+			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
+			if (seleccion <= count && seleccion >= 1) {
+				consumos.add(productos.get(seleccion));
+			}
+			else {
+				System.out.println("Selcciona un numero entre 1 y " +count);
+				continue;
+			}
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+				continue;
+			else 
+				consumiendo=false;	
+		}
+		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
+		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+		hotelSystem.seleccionarProducto(consumos, hab, pagar);
 	}
 
 	private static void productoRestaurante() {
 		Boolean consumiendo = true;
+		List<Producto> consumos = new ArrayList<>();
+		List<ProductoRestaurante> productos = hotelSystem.getServicioRestaurante().getProductos();
 		while (consumiendo) {
-		Integer count = 0; 
-		for(ProductoRestaurante producto: hotelSystem.getServiciosRestaurante()){
-			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
-			count++;
+			Integer count = 0;
+			for(Producto producto: productos){
+				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+				count++;
 			}
-		Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
-		if (seleccion <= count && seleccion>=1) 
-			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
-			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
-			hotelSystem.seleccionarProductoRestaurante(seleccion-1, hab, pagar );}
-		else
-			{System.out.println("Selcciona un numero entre 1 y " +count);
-			productoRestaurante();}
-		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
-		else {consumiendo=false;}	
-	}
-		
+			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
+			if (seleccion <= count && seleccion >= 1) {
+				consumos.add(productos.get(seleccion));
+			}
+			else {
+				System.out.println("Selcciona un numero entre 1 y " +count);
+				continue;
+			}
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+				continue;
+			else 
+				consumiendo=false;	
+		}
+		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
+		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+		hotelSystem.seleccionarProductoRestaurante(consumos, hab, pagar);
 	}
 
 	private static void productoSpa() {
 		Boolean consumiendo = true;
+		List<Producto> consumos = new ArrayList<>();
+		List<Producto> productos = hotelSystem.getServicioSpa().getProductosYServicios();
 		while (consumiendo) {
-		Integer count = 0; 
-		for(Producto producto: hotelSystem.getServiciosSpa()){
-			System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
-			count++;
+			Integer count = 0;
+			for(Producto producto: productos){
+				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
+				count++;
 			}
-		Integer seleccion = Integer.parseInt(input("Selecciona el servicio, digite un número entre 1 y "+count));
-		if (seleccion <= count && seleccion>=1) 
-			{Boolean pagar = (input("¿Deseas pagar ya?\n1) Si\n2) No").equals("1")) ? true : false;
-			String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
-			hotelSystem.seleccionarProductoSpa(seleccion-1, hab, pagar);}
-		else
-			{System.out.println("Selcciona un numero entre 1 y " +count);
-			productoSpa();}
-		if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) {continue;}
-		else {consumiendo=false;}	
-	}}
+			Integer seleccion = Integer.parseInt(input("Selecciona el producto, digite un número entre 1 y "+count));
+			if (seleccion <= count && seleccion >= 1) {
+				consumos.add(productos.get(seleccion));
+			}
+			else {
+				System.out.println("Selcciona un numero entre 1 y " +count);
+				continue;
+			}
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+				continue;
+			else 
+				consumiendo=false;	
+		}
+		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
+		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
+		hotelSystem.seleccionarProductoRestaurante(consumos, hab, pagar);
+	}
 
 	private static void printConsumos() {
 		System.out.println("Selecciona entre las siguientes opciones:");

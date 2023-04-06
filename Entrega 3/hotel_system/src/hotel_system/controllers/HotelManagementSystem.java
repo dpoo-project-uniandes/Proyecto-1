@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import hotel_system.models.Consumible;
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
@@ -27,31 +28,27 @@ import services.FileManager;
 
 public class HotelManagementSystem {
 	
-	private Map<String,Usuario> usuarios;
 	private List<Habitacion> inventarioHabitaciones;
 	private List<TipoHabitacion> opcionesHabitacion;
 	private List<Reserva> reservas;
 	private List<Estadia> registros;
 	private List<Producto> inventarioProductos;
-	private HashMap<String, Servicio> inventarioServicios;
+	private Map<String,Usuario> usuarios;
+	private Map<String, Servicio> inventarioServicios;
 	
 	public HotelManagementSystem()  {
-		cargarUsuarios();
 		try {
 			cargarTipoHabitaciones();
 			cargarHabitaciones();
 			//this.reservas = cargarReservas();
 			//this.registros = cargarEstadias();
-			//this.setInventarioProductos(cargarProductos());
+			cargarProductos();
 			cargarServicios();
+			cargarUsuarios();
 		} catch (Exception e) {
-			System.out.println("El sistema no puedo iniciarlizarse, intente nuevamente");
+			System.out.println("El sistema no puedo inicializarse, intente nuevamente");
 			e.printStackTrace();
 		}
-	}
-	
-	private void cargarUsuarios(){
-		usuarios= new HashMap<String,Usuario>();
 	}
 	
 	private void cargarTipoHabitaciones() throws Exception {
@@ -105,6 +102,15 @@ public class HotelManagementSystem {
 		return disponibilidad;
 	}
 	
+	private void cargarUsuarios() throws Exception {
+		Map<String, Usuario> usuarios = new HashMap<String, Usuario>();
+		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("usuarios.csv");
+		for(Map<String, String> dato : datos) {
+			usuarios.put(dato.get("user"), new Usuario(dato.get("user"), dato.get("password"), Rol.valueOf(dato.get("rol"))));
+		}
+		this.usuarios = usuarios;
+	}
+	
 	private void cargarReservas() throws Exception{
 		this.reservas = new ArrayList<Reserva>();
 		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("reservas.csv");
@@ -115,9 +121,64 @@ public class HotelManagementSystem {
 			Utils.stringToDate("fechaSalida"), titular, Integer.parseInt(dato.get("cantidadPersonas")), 
 			inventarioHabitaciones)); 
 		}
-		
-		
 	}
+	
+	private void cargarProductos() throws Exception {
+		List<Producto> productosCargados = new ArrayList<>();
+		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("productos.csv");
+		for (Map<String, String> dato : datos) {
+			Long id = Long.parseLong(dato.get("id"));
+		    String nombre = dato.get("nombre");
+		    Double precio = Double.parseDouble(dato.get("precio"));
+		    Producto producto = new Producto(id, nombre, precio);
+		    productosCargados.add(producto);
+		}
+		this.inventarioProductos = productosCargados;
+	}	
+
+	private void cargarServicios() throws Exception {
+        HashMap<String, Servicio> serviciosCargados = new HashMap<>();
+        Restaurante restaurante = cargarServicioRestaurante();
+        Spa spa = cargarServicioSpa();
+        
+        serviciosCargados.put("restaurante", restaurante);
+        serviciosCargados.put("spa", spa);
+
+        this.inventarioServicios = serviciosCargados;
+    }
+	
+	private Spa cargarServicioSpa() throws Exception {
+        List<Producto> productosSpa = new ArrayList<Producto>();
+        List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("productos_spa.csv");
+        for (Map<String, String> dato : datosSpa) {
+            Long id = Long.parseLong(dato.get("id"));
+            String nombre = dato.get("nombre");
+            Double precio = Double.parseDouble(dato.get("precio"));
+            productosSpa.add(new Producto(id, nombre, precio));
+        }
+        return new Spa(384723984L, productosSpa);
+	}
+	
+	private Restaurante cargarServicioRestaurante() throws Exception {
+        List<ProductoRestaurante> productosRestaurante = new ArrayList<>();
+        List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("productos_restaurante.csv");
+        for (Map<String, String> dato : datosRestaurante) {
+            Long id = Long.parseLong(dato.get("id"));
+            String nombre = dato.get("nombre");
+            Double precio = Double.parseDouble(dato.get("precio"));
+            String fechaInicial = dato.get("fechaInicial");
+            String fechaFinal = dato.get("fechaFinal");
+            List<Date> fechas = new ArrayList<>();
+            fechas.add(Utils.stringToDate(fechaInicial));
+            fechas.add(Utils.stringToDate(fechaFinal));
+            Boolean alCuarto = Boolean.parseBoolean(dato.get("alCuarto"));
+            String tipo = dato.get("tipo");
+            ProductoRestaurante producto = new ProductoRestaurante(id, nombre, precio, fechas, alCuarto, tipo);
+            productosRestaurante.add(producto);
+        }
+        return new Restaurante(988374853L, productosRestaurante);
+	}
+	
 	private Titular setTitular(String string) {
 		String[] datos = string.split(",");
 		return new Titular(datos[0], 
@@ -126,10 +187,12 @@ public class HotelManagementSystem {
 				datos[3], 
 				datos[4]);
 	}
+	
 	private List<Estadia> cargarEstadias(){
 		return registros;
 		
 	}
+	
 	public Integer calcularCapacidadTotal(List<Integer> ids) {
 		Integer count = 0;
 		for (Integer id:ids) {
@@ -151,115 +214,85 @@ public class HotelManagementSystem {
 		reservas.add(new Reserva(Utils.stringToDate(llegada), Utils.stringToDate(salida), titular, cantidad, habitaciones));
 		//Reserva reserva = new Reserva();
 	}
+	
 	public Integer seleccionarHab(Integer select) {
 		String alias = opcionesHabitacion.get(select).getAlias();
 		return inventarioHabitaciones.stream()
 				.filter(hab -> hab.getTipo().getAlias().equals(alias))
 				.findAny().get().getNumero();
 	}
-	private List<Producto> cargarProductos() throws Exception {
-		List<Producto> productosCargados = new ArrayList<>();
-	    List<Map<String, String>> datos = FileManager.cargarArchivoCSV("productos.csv");
-	    for (Map<String, String> dato : datos) {
-	    	Long id = Long.parseLong(dato.get("id"));
-	        String nombre = dato.get("nombre");
-	        Double precio = Double.parseDouble(dato.get("precio"));
-	        Producto producto = new Producto(id, nombre, precio);
-	        productosCargados.add(producto);
-	        }
-	    this.setInventarioProductos(productosCargados);
-	    return productosCargados;
-	    }
 
-	public void cargarServicios() throws Exception {
-        HashMap<String, Servicio> serviciosCargados = new HashMap<>();
-        
-        List<ProductoRestaurante> productosRestaurante = new ArrayList<>();
-        List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("restaurante.csv");
-        for (Map<String, String> dato : datosRestaurante) {
-            Long id = Long.parseLong(dato.get("id"));
-            String nombre = dato.get("nombre");
-            Double precio = Double.parseDouble(dato.get("precio"));
-            String fechaInicial = dato.get("fechaInicial");
-            String fechaFinal = dato.get("fechaFinal");
-            List<Date> fechas = new ArrayList<>();
-            fechas.add(Utils.stringToDate(fechaInicial));
-            fechas.add(Utils.stringToDate(fechaFinal));
-            Boolean alCuarto = Boolean.parseBoolean(dato.get("alCuarto"));
-            String tipo = dato.get("tipo");
-            ProductoRestaurante producto = new ProductoRestaurante(id, nombre, precio, fechas, alCuarto, tipo);
-            productosRestaurante.add(producto);
-        }
-        serviciosCargados.put("Servicio Restaurante", new Restaurante((long) 000001, productosRestaurante));
-
-        List<Producto> productosSpa = new ArrayList<Producto>();
-        List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("productos_spa.csv");
-        for (Map<String, String> dato : datosSpa) {
-            Long id = Long.parseLong(dato.get("id"));
-            String nombre = dato.get("nombre");
-            Double precio = Double.parseDouble(dato.get("precio"));
-            productosSpa.add(new Producto(id, nombre, precio));
-        }
-        Spa producto = new Spa((long) 000002, productosSpa);
-        serviciosCargados.put("Servicio Spa", producto);
-
-        this.inventarioServicios = serviciosCargados;
-    }
-
-	public List<Producto> getServiciosSpa(){
-		Spa spa = (Spa)inventarioServicios.get("Servicio Spa");
-		return spa.getProductosYServicios();
+	public Spa getServicioSpa(){
+		Spa spa = (Spa)inventarioServicios.get("spa");
+		return spa;
 	}
-	public List<ProductoRestaurante> getServiciosRestaurante(){
-		Restaurante res = (Restaurante)inventarioServicios.get("Servicio Restaurante");
-		return res.getProductos();
+	
+	public Restaurante getServicioRestaurante(){
+		Restaurante res = (Restaurante)inventarioServicios.get("restaurante");
+		return res;
 	}
+	
 	public Reserva getReservaById(String id) {
-		Optional<Reserva> reservacion = reservas.stream().filter(res -> (""+res.getNumero()).equals(id))
+		Optional<Reserva> reservacion = reservas.stream()
+				.filter(res -> (""+res.getNumero()).equals(id))
 						.findAny();
 		if (reservacion.isPresent()) {return reservacion.get();}
 		else {return null;}
 	}    
+	
 	public Estadia getEstadiaById(String id) {
-		Optional<Estadia> registro = registros.stream().filter(reg -> (""+reg.getId()).equals(id))
+		Optional<Estadia> registro = registros.stream()
+				.filter(reg -> (""+reg.getId()).equals(id))
 				.findAny();
 		if (registro.isPresent()) {return registro.get();}
 		else {return null;}
 	}
+	
 	public Reserva getReservaByTitular(String nom) {
-		Optional<Reserva> reservacion = reservas.stream().filter(res -> res.getTitular().getNombre().equals(nom))
+		Optional<Reserva> reservacion = reservas.stream()
+				.filter(res -> res.getTitular().getNombre().equals(nom))
 				.findAny();
 		if (reservacion.isPresent()) {return reservacion.get();}
 		else {return null;}
 	}
+	
 	public Estadia getEstadiaByTitular(String nom) {
-		Optional<Estadia> registro = registros.stream().filter(reg -> (reg.getReserva().getTitular()
+		Optional<Estadia> registro = registros.stream()
+				.filter(reg -> (reg.getReserva().getTitular()
 				.getNombre().equals(nom))).findAny();
 		if (registro.isPresent()) {return registro.get();}
 		else {return null;}
 	}
+	
 	public Reserva getReservaByHabitacion(String id) {
-		Optional<Habitacion> reservacion = inventarioHabitaciones.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+		Optional<Habitacion> reservacion = inventarioHabitaciones
+				.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
 				.findAny();
 		if (reservacion.isPresent()) {return reservacion.get().getReservaActual();}
 		else {return null;}
 	}
+	
 	public Estadia getEstadiaByHabitacion(String id) {
-		Optional<Habitacion> reservacion = inventarioHabitaciones.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+		Optional<Habitacion> reservacion = inventarioHabitaciones.stream()
+				.filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
 				.findAny();
 		if (reservacion.isPresent()) {return reservacion.get().getReservaActual().getEstadia();}
 		else {return null;}
 	}
-	public boolean validad_usuario(String user) {
+	
+	public boolean validadUsuario(String user) {
 		return usuarios.containsKey(user);
 	}
-	public String validar_contraseña(String user, String password) {
+	
+	public String validarContrasenia(String user, String password) {
 		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString(); 
 		else return null;
 	}
 	
-	public void registrar_usuario(String user, String password, Rol rol) {
+	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
 		usuarios.put(user, new Usuario(user, password, rol));
+		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
+		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
 	}
 
 	public List<Habitacion> getInventarioHabitaciones() {
@@ -279,7 +312,7 @@ public class HotelManagementSystem {
 	}
 
 	
-	public HashMap<String, Servicio> getInventarioServicios() {
+	public Map<String, Servicio> getInventarioServicios() {
 		return inventarioServicios;
 	}
 
@@ -295,36 +328,45 @@ public class HotelManagementSystem {
 		this.opcionesHabitacion = opcionesHabitacion;
 	}
 
-	public void seleccionarProductoSpa(int cons, String hab, Boolean pagar) {
-		Producto consumo = getServiciosSpa().get(cons);
+	public void seleccionarProductoSpa(List<Producto> consumos, String hab, Boolean pagar) {
 		Estadia estadia = getEstadiaByHabitacion(hab);
 		if (pagar) {
-			estadia.cargarFactura(new Factura(estadia.getReserva().getTitular(), null));
+			for (Producto consumible : consumos) {
+				getServicioSpa().agregarConsumo(consumible);
+			}
+			estadia.cargarFactura(getServicioSpa().facturar(estadia.getReserva().getTitular()));
 		}
 		else {
-			estadia.cargarConsumo(consumo);
+			for (Producto consumible : consumos) {
+				estadia.cargarConsumo(consumible);
+			}
 		}
 	}
 
-	public void seleccionarProductoRestaurante(int cons, String hab, Boolean pagar) {
-		ProductoRestaurante consumo = getServiciosRestaurante().get(cons);
+	public void seleccionarProductoRestaurante(List<Producto> consumos, String hab, Boolean pagar) {
 		Estadia estadia = getEstadiaByHabitacion(hab);
 		if (pagar) {
-			estadia.cargarFactura(new Factura(estadia.getReserva().getTitular(), null));
+			for (Producto consumible : consumos) {
+				getServicioRestaurante().agregarConsumo(consumible);
+			}
+			estadia.cargarFactura(getServicioRestaurante().facturar(estadia.getReserva().getTitular()));
 		}
 		else {
-			estadia.cargarConsumo(consumo);
+			for (Producto consumible : consumos) {
+				estadia.cargarConsumo(consumible);
+			}
 		}
 	}
 
-	public void seleccionarProducto(int cons, String hab, Boolean pagar) {
-		Producto consumo = getInventarioProductos().get(cons);
+	public void seleccionarProducto(List<Consumible> consumos, String hab, Boolean pagar) {
 		Estadia estadia = getEstadiaByHabitacion(hab);
 		if (pagar) {
-			estadia.cargarFactura(new Factura(estadia.getReserva().getTitular(), null));
+			estadia.cargarFactura(new Factura(estadia.getReserva().getTitular(), consumos));
 		}
 		else {
-			estadia.cargarConsumo(consumo);
+			for (Consumible consumible : consumos) {
+				estadia.cargarConsumo(consumible);
+			}
 		}		
 	}
 }
