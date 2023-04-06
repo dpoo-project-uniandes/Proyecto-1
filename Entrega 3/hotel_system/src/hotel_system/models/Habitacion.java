@@ -23,8 +23,8 @@ public class Habitacion {
 	private List<Integer> rangoDeFechasAIndices(Date desde, Date hasta) {
 		List<Integer> indexes = new ArrayList<>();
 		try {
-			Integer desdeIndex = this.disponibilidad.indexOf(desde);
-			Integer hastaIndex = Utils.sustractDates(desde, hasta);
+			Integer desdeIndex = this.disponibilidad.indexOf(new Disponibilidad(0.0, true, desde));
+			Integer hastaIndex = Utils.sustractDates(desde, hasta) + desdeIndex;
 			for(int i = desdeIndex; i < hastaIndex; i++) {
 				indexes.add(i);
 			}
@@ -57,7 +57,6 @@ public class Habitacion {
 	public Double calcularTarifa(Date desde, Date hasta) {
 		Double tarifa = 0.0;
 		for(Integer i : rangoDeFechasAIndices(desde, hasta)) {
-			System.out.println(rangoDeFechasAIndices(desde, hasta));
 			Disponibilidad disponibilidad = this.disponibilidad.get(i);
 			tarifa += disponibilidad.getPrecio();
 		}
